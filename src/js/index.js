@@ -5,8 +5,8 @@ import 'jquery';
 import { ListPlansButton, ListTopicsButton, recordButton, stopButton } from './dom-loader';
 import { addEventListenersToListItems, createListElement, removeChildNodes } from './index_helpers';
 
-var CONFIG = require('./config.json');
-var URL = CONFIG.localUrl;
+const CONFIG = require('./config.json');
+let URL = CONFIG.localUrl;
 
 console.log(URL);
 
@@ -33,7 +33,7 @@ function fetchTopics(){
     .then(response => response.json())
     .then(json => {
         let topic_list = json["directories"];
-        let topic_list_element = createListElement(topic_list,"Topics");
+        let topic_list_element = createListElement(topic_list,"Topics","topics");
         console.log(topic_list_element);
         fetch_response_container.appendChild(topic_list_element);
         addEventListenersToListItems();
@@ -54,7 +54,7 @@ function fetchPlans(){
     .then(response => response.json())
     .then(json => {
         let plan_list = json["directories"];
-        let plan_list_element = createListElement(plan_list,"Plans");
+        let plan_list_element = createListElement(plan_list,"Plans","plans");
         console.log(plan_list_element.childNodes);
         fetch_response_container.appendChild(plan_list_element);
         addEventListenersToListItems();
