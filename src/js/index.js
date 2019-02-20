@@ -1,9 +1,12 @@
 import '../css/main.css';
 import '../css/input-elements.css';
+import 'jquery';
 
 import { ListPlansButton, ListTopicsButton, recordButton, stopButton } from './dom-loader';
 
 
+const p = $('test_p');
+console.log(p);
 ListTopicsButton.addEventListener('click', listTopics);
 ListPlansButton.addEventListener('click', listPlans);
 
@@ -17,9 +20,6 @@ function listTopics(){
 function listPlans(){
     fetchPlans();
 }
-/*
-    myAnchor.parentNode.replaceChild(mySpan, myAnchor);
-*/
 
 function fetchTopics(){
     let fetch_response_container = document.getElementById('fetch-response-container');
@@ -30,20 +30,11 @@ function fetchTopics(){
     fetch(url) 
     .then(response => response.json())
     .then(json => {
-        let topic_response_list = document.createElement('div');
-        let h2 = document.createElement('h2');
-        h2.innerText = "Topics";
-        topic_response_list.appendChild(h2);
-
-        let plan_list = json["directories"];
-        for(let i = 0;i < plan_list.length;i++){
-            console.log(plan_list[i]);
-            var ul = document.createElement('ul');
-            ul.innerText = plan_list[i];
-            ul.className = "list-group-item";
-            topic_response_list.appendChild(ul);
-        }
-        fetch_response_container.appendChild(topic_response_list);        
+        let topic_list = json["directories"];
+        let topic_list_element = createListElement(topic_list,"Topics");
+        console.log(topic_list_element);
+        fetch_response_container.appendChild(topic_list_element);
+        addEventListenersToListItems();
     })
     .catch(error => {
         console.log(error);
@@ -61,27 +52,16 @@ function fetchPlans(){
     fetch(url) 
     .then(response => response.json())
     .then(json => {
-        let plan_response_list = document.createElement('div');
-        let h2 = document.createElement('h2');
-        h2.innerText = "Plans";
-        plan_response_list.appendChild(h2);
-
         let plan_list = json["directories"];
-        for(let i = 0;i < plan_list.length;i++){
-            //console.log(plan_list[i]);
-            var ul = document.createElement('ul');
-            ul.innerText = plan_list[i];
-            ul.className = "list-group-item";
-            plan_response_list.appendChild(ul);
-        }
-        fetch_response_container.appendChild(plan_response_list);
+        let plan_list_element = createListElement(plan_list,"Plans");
+        console.log(plan_list_element.childNodes);
+        fetch_response_container.appendChild(plan_list_element);
+        addEventListenersToListItems();
     })
     .catch(error => {
         console.log(error);
     });
 }
-
-
 
 
 function testAudioUserGetMedia(){
@@ -106,6 +86,53 @@ function testAudioUserGetMedia(){
      } else {
         console.log('getUserMedia not supported on your browser!');
      }
+}
+
+
+function createListElement(array,h2_text){
+    /*
+    Takes an array from a fetch request response and creates a div element contaning a list
+    <divid="response_div">
+        <h2></h2>
+        <ul id="response_list">
+            <li id="0"></li>
+            <li id="1"></li>
+        </ul>
+    </div>
+
+    */
+    let response_div = document.createElement('div');
+    let h2 = document.createElement('h2');
+    h2.innerText = h2_text;
+    response_div.appendChild(h2);
+
+    let response_unordered_list = document.createElement('ul');
+    response_unordered_list.id = "response_list";
+
+    for(let i = 0;i < array.length;i++){
+        var li = document.createElement('li');
+        li.innerText = array[i];
+        li.id = i;
+        li.className = "list-group-item";
+        response_unordered_list.appendChild(li);
+    }
+    
+    response_div.appendChild(response_unordered_list);
+    return response_div;
+}
+
+function addEventListenersToListItems(){
+    var ul = document.getElementById('response_list');
+    var lis = ul.getElementsByTagName('li');
+
+    for(let i = 0; i < lis.length;i++)
+    {
+        lis[i].addEventListener('click', clickEvent);
+    }
+}
+
+function clickEvent(e){
+    console.log(e.target.id + " was clicked");
 }
 
 function removeChildNodes(element){
