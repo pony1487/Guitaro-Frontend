@@ -3,40 +3,31 @@ import '../css/input-elements.css';
 import 'jquery';
 
 import { ListPlansButton, ListTopicsButton, recordButton, stopButton } from './dom-loader';
-import { addEventListenersToListItems, createListElement, removeChildNodes } from './index_helpers';
+import { createListElement, removeChildNodes } from './index_helpers';
 
 const CONFIG = require('./config.json');
-let URL = CONFIG.localUrl;
+let BASE_URL = CONFIG.localUrl;
+let TOPICS_URL = CONFIG.localTopics;
+let PLANS_URL = CONFIG.localPlans;
 
-console.log(URL);
+let TOPICS_LIST;
+let PLANS_LIST;
 
 ListTopicsButton.addEventListener('click', listTopics);
 ListPlansButton.addEventListener('click', listPlans);
 
-recordButton.addEventListener('click', recordAudio);
-stopButton.addEventListener('click', stopRecording);
-
-function listTopics(){
+window.onload = function init(){
+    console.log("loaded..");
     fetchTopics();
-}
-
-function listPlans(){
     fetchPlans();
+
 }
 
 function fetchTopics(){
-    let fetch_response_container = document.getElementById('fetch-response-container');
-    removeChildNodes(fetch_response_container);
-
-    let url = URL + '/topics'
-    fetch(url) 
+    fetch(TOPICS_URL) 
     .then(response => response.json())
     .then(json => {
-        let topic_list = json["directories"];
-        let topic_list_element = createListElement(topic_list,"Topics","topics");
-        console.log(topic_list_element);
-        fetch_response_container.appendChild(topic_list_element);
-        addEventListenersToListItems();
+        TOPICS_LIST = json["directories"];
     })
     .catch(error => {
         console.log(error);
@@ -44,55 +35,121 @@ function fetchTopics(){
 }
 
 function fetchPlans(){
-
-    // Remove Previous Lists to stop appending multiple items
-    let fetch_response_container = document.getElementById('fetch-response-container');
-    removeChildNodes(fetch_response_container);
-
-    let url =  URL + '/plans'
-    fetch(url) 
+    fetch(PLANS_URL) 
     .then(response => response.json())
     .then(json => {
-        let plan_list = json["directories"];
-        let plan_list_element = createListElement(plan_list,"Plans","plans");
-        console.log(plan_list_element.childNodes);
-        fetch_response_container.appendChild(plan_list_element);
-        addEventListenersToListItems();
+        PLANS_LIST = json["directories"];
     })
     .catch(error => {
         console.log(error);
     });
 }
 
+function listTopics(){
+    let fetch_response_container = document.getElementById('fetch-response-container');
+    removeChildNodes(fetch_response_container);
 
-function testAudioUserGetMedia(){
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        console.log('getUserMedia supported.');
-        navigator.mediaDevices.getUserMedia (
-           // constraints - only audio needed for this app
-           {
-              audio: true
-           })
-     
-           // Success callback
-           .then(function(stream) {
-      
-           })
-     
-           // Error callback
-           .catch(function(err) {
-              console.log('The following getUserMedia error occured: ' + err);
-           }
-        );
-     } else {
-        console.log('getUserMedia not supported on your browser!');
-     }
+    let list_element = createListElement(TOPICS_LIST,"Topics","topics");
+    fetch_response_container.appendChild(list_element);
+    addEventListenerToList();
 }
 
-function recordAudio(){
-    console.log("Recording...");
+function listPlans(){
+    let fetch_response_container = document.getElementById('fetch-response-container');
+    removeChildNodes(fetch_response_container);
+
+    let list_element = createListElement(PLANS_LIST,"Plans","plans");
+    fetch_response_container.appendChild(list_element);
+    addEventListenerToList();
 }
 
-function stopRecording(){
-    console.log("Stopped...");
+function addEventListenerToList(){
+    let ul = document.getElementById('response_list');
+    let lis = ul.getElementsByTagName('li');
+
+    for(let i = 0; i < lis.length;i++)
+    {
+        lis[i].addEventListener('click', clickListItem);
+    }
 }
+
+function clickListItem(e){
+    list_lesson_in_topic(e.target.innerText);
+}
+
+function list_lesson_in_topic(path){
+    let fetch_response_container = document.getElementById('fetch-response-container');
+    removeChildNodes(fetch_response_container);
+
+    // If it is a topic lesson
+    if(TOPICS_LIST.includes(path)){
+        let lesson_path = TOPICS_URL + "/" + path;
+        fetch(lesson_path) 
+        .then(response => response.json())
+        .then(json => {
+            let list = json["files"];
+            let list_element = createListElement(list,"Lessons",path);
+            fetch_response_container.appendChild(list_element);
+            addEventListenerToLesson(lesson_path);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+    
+    // If it is a plan lesson
+    if(PLANS_LIST.includes(path)){
+        let lesson_path = PLANS_URL + "/" + path;
+        fetch(lesson_path) 
+        .then(response => response.json())
+        .then(json => {
+            let list = json["files"];
+            let list_element = createListElement(list,"Lessons",path);
+            fetch_response_container.appendChild(list_element);
+            addEventListenerToLesson(lesson_path);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+}
+
+function addEventListenerToLesson(lesson_path){
+    let ul = document.getElementById('response_list');
+    let lis = ul.getElementsByTagName('li');
+
+    for(let i = 0; i < lis.length;i++)
+    {
+        lis[i].addEventListener('click', clickLesson);
+        lis[i].myParam = lesson_path;
+    }
+}
+
+
+function clickLesson(e){
+    let url = e.target.myParam + "/" + e.target.innerText;
+    console.log(url);
+
+    var context = new AudioContext();
+    fetch(url)    
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+    .then(audioBuffer => {
+        return audioBuffer;
+    })
+    .then(audioBuffer =>{
+            playWav(audioBuffer,context);
+    });
+
+}
+
+function playWav(audioBuffer,context) {
+    const source = context.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(context.destination);
+    source.start();
+}
+
+
+
+

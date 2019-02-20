@@ -1,3 +1,4 @@
+
 const CONFIG = require('./config.json');
 let URL = CONFIG.localUrl;
 
@@ -20,7 +21,6 @@ export function createListElement(array,h2_text,path){
 
     let response_unordered_list = document.createElement('ul');
     response_unordered_list.className = path;
-    //console.log(response_unordered_list.className);
     response_unordered_list.id = "response_list";
 
     for(let i = 0;i < array.length;i++){
@@ -35,39 +35,6 @@ export function createListElement(array,h2_text,path){
     return response_div;
 }
 
-export function addEventListenersToListItems(){
-    let ul = document.getElementById('response_list');
-    let lis = ul.getElementsByTagName('li');
-
-    for(let i = 0; i < lis.length;i++)
-    {
-        lis[i].addEventListener('click', clickEvent);
-    }
-}
-
-
-function clickEvent(e){
-    let listClassName = document.getElementById("response_list").className;
-    let url = URL + "/" + listClassName + "/" + e.target.innerText;
-
-    let fetch_response_container = document.getElementById('fetch-response-container');
-    removeChildNodes(fetch_response_container);
-
-    fetch(url) 
-    .then(response => response.json())
-    .then(json => {
-        console.log(json);
-        let file_list = json["files"];
-        console.log(file_list);
-        let file_list_element = createListElement(file_list,"Lesson","");
-        console.log(file_list_element);
-        fetch_response_container.appendChild(file_list_element);
-    })
-    .catch(error => {
-        console.log(error);
-    })
-}
-
 export function removeChildNodes(element){
     if(element.hasChildNodes()){
         let child_nodes = element.childNodes;
@@ -75,6 +42,54 @@ export function removeChildNodes(element){
             element.removeChild(child_nodes[i]);
         }
     }
+}
+
+//Used for debugging
+export function getEachLessonInTopic(){
+    //Get each lesson in the topic
+    for(let i = 0; i < TOPICS_LIST.length;i++){
+        let lesson_path = TOPICS_URL + "/" + TOPICS_LIST[i];
+        //console.log(lesson_path);
+
+        fetch(lesson_path) 
+        .then(response => response.json())
+        .then(json => {
+            //returns an array for each topic containing lesson file names
+            return json["files"];
+        })
+        .then(lessons => {
+            for(let i = 0; i < lessons.length;i++){
+                //console.log(lesson_path + "/" + lessons[i]);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+}
+
+//Used for debugging
+export function getEachLessonInPlan(){
+    //Get each lesson in the plan
+    for(let i = 0; i < PLANS_LIST.length;i++){
+        let lesson_path = PLANS_URL + "/" + PLANS_LIST[i];
+        console.log(lesson_path);
+        
+        fetch(lesson_path) 
+        .then(response => response.json())
+        .then(json => {
+            //returns an array for each topic containing lesson file names
+            return json["files"];
+        })
+        .then(lessons => {
+            for(let i = 0; i < lessons.length;i++){
+                //console.log(lesson_path + "/" + lessons[i]);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }   
 }
 
 export function hideElement(element) {
