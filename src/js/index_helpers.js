@@ -50,10 +50,18 @@ function clickEvent(e){
     let listClassName = document.getElementById("response_list").className;
     let url = URL + "/" + listClassName + "/" + e.target.innerText;
 
+    let fetch_response_container = document.getElementById('fetch-response-container');
+    removeChildNodes(fetch_response_container);
+
     fetch(url) 
     .then(response => response.json())
     .then(json => {
         console.log(json);
+        let file_list = json["files"];
+        console.log(file_list);
+        let file_list_element = createListElement(file_list,"Lesson","");
+        console.log(file_list_element);
+        fetch_response_container.appendChild(file_list_element);
     })
     .catch(error => {
         console.log(error);
