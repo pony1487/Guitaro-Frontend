@@ -1,7 +1,3 @@
-
-const CONFIG = require('./config.json');
-let URL = CONFIG.localUrl;
-
 export function createListElement(array,h2_text,path){
     /*
     Takes an array from a fetch request response and creates a div element contaning a list

@@ -2,8 +2,10 @@ import '../css/main.css';
 import '../css/input-elements.css';
 import 'jquery';
 
-import { ListPlansButton, ListTopicsButton, recordButton, stopButton } from './dom-loader';
+import { ListPlansButton, ListTopicsButton } from './dom-loader';
 import { createListElement, removeChildNodes } from './index_helpers';
+import { createLessonContainer } from './lesson';
+
 
 const CONFIG = require('./config.json');
 let BASE_URL;
@@ -46,8 +48,9 @@ function fetchTopics(){
     .then(response => response.json())
     .then(json => {
         TOPICS_LIST = json["directories"];
+
     })
-    .catch(error => {
+    .catch(error => {TOPICS_LIST
         console.log(error);
     });
 }
@@ -64,8 +67,13 @@ function fetchPlans(){
 }
 
 function listTopics(){
+    //prevent constantly appending a new list each time
     let fetch_response_container = document.getElementById('fetch-response-container');
     removeChildNodes(fetch_response_container);
+
+    //remove lesson container if there is one
+    let lesson_div = document.getElementById('lesson');
+    removeChildNodes(lesson_div);
 
     let list_element = createListElement(TOPICS_LIST,"Topics","topics");
     fetch_response_container.appendChild(list_element);
@@ -73,8 +81,13 @@ function listTopics(){
 }
 
 function listPlans(){
+    //prevent constantly appending a new list each time
     let fetch_response_container = document.getElementById('fetch-response-container');
     removeChildNodes(fetch_response_container);
+
+    //remove lesson container if there is one
+    let lesson_div = document.getElementById('lesson');
+    removeChildNodes(lesson_div);
 
     let list_element = createListElement(PLANS_LIST,"Plans","plans");
     fetch_response_container.appendChild(list_element);
@@ -143,30 +156,45 @@ function addEventListenerToLesson(lesson_path){
     }
 }
 
-
 function clickLesson(e){
     let url = e.target.myParam + "/" + e.target.innerText;
-    console.log(url);
 
-    var context = new AudioContext();
-    fetch(url)    
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
-    .then(audioBuffer => {
-        return audioBuffer;
-    })
-    .then(audioBuffer =>{
-            playWav(audioBuffer,context);
-    });
+    //remove lesson list
+    let fetch_response_container = document.getElementById('fetch-response-container');
+    removeChildNodes(fetch_response_container);
+
+    //get lesson element from index.html
+    let lesson_element = document.getElementById('lesson');
+
+    let lesson_container = createLessonContainer();
+    lesson_element.appendChild(lesson_container);
+
 
 }
 
-function playWav(audioBuffer,context) {
-    const source = context.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(context.destination);
-    source.start();
-}
+// function clickLesson(e){
+//     let url = e.target.myParam + "/" + e.target.innerText;
+//     console.log(url);
+
+//     var context = new AudioContext();
+//     fetch(url)    
+//     .then(response => response.arrayBuffer())
+//     .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+//     .then(audioBuffer => {
+//         return audioBuffer;
+//     })
+//     .then(audioBuffer =>{
+//             playWav(audioBuffer,context);
+//     });
+
+// }
+
+// function playWav(audioBuffer,context) {
+//     const source = context.createBufferSource();
+//     source.buffer = audioBuffer;
+//     source.connect(context.destination);
+//     source.start();
+// }
 
 
 
