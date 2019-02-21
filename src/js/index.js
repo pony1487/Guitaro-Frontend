@@ -6,12 +6,30 @@ import { ListPlansButton, ListTopicsButton, recordButton, stopButton } from './d
 import { createListElement, removeChildNodes } from './index_helpers';
 
 const CONFIG = require('./config.json');
-let BASE_URL = CONFIG.localUrl;
-let TOPICS_URL = CONFIG.localTopics;
-let PLANS_URL = CONFIG.localPlans;
-
+let BASE_URL;
+let TOPICS_URL;
+let PLANS_URL;
 let TOPICS_LIST;
 let PLANS_LIST;
+
+// Set up local dev or prod aws
+let environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+
+if(environment == 'production'){
+    BASE_URL = CONFIG.awsUrl;
+    TOPICS_URL = CONFIG.awsTopics;
+    PLANS_URL = CONFIG.awsPlans;
+}
+else if(environment == 'development'){
+    BASE_URL = CONFIG.localUrl;
+    TOPICS_URL = CONFIG.localTopics;
+    PLANS_URL = CONFIG.localPlans;
+}
+
+console.log(environment);
+console.log(BASE_URL);
+console.log(TOPICS_URL);
+console.log(PLANS_URL);
 
 ListTopicsButton.addEventListener('click', listTopics);
 ListPlansButton.addEventListener('click', listPlans);
