@@ -20,12 +20,15 @@
     "css-loader": "^2.1.0",
     "file-loader": "^3.0.1",
     "jquery": "^3.3.1",
+    "recorderjs": "^1.0.1",
     "style-loader": "^0.23.1",
+    "web-audio-recorder-js": "0.0.2",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "recorderjs": "^1.0.1"
   }
 }

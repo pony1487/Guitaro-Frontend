@@ -5,6 +5,7 @@ import 'jquery';
 import { ListPlansButton, ListTopicsButton } from './dom-loader';
 import { createListElement, removeChildNodes } from './index_helpers';
 import { createLessonContainer } from './lesson';
+import { playLesson, stopLessonPlaying, recordLesson, stopRecording } from './lesson_helpers';
 
 
 const CONFIG = require('./config.json');
@@ -169,8 +170,26 @@ function clickLesson(e){
     let lesson_container = createLessonContainer();
     lesson_element.appendChild(lesson_container);
 
+    //get the buttons that were just created
+    let play_button = document.getElementById('play_button');
+    play_button.addEventListener('click', playLesson);
+    play_button.myParam = url;
+
+    let stop_button = document.getElementById('stop_button');
+    stop_button.addEventListener('click', stopLessonPlaying);
+    stop_button.myParam = url;
+
+
+    let record_button = document.getElementById('record_button');
+    record_button.addEventListener('click', recordLesson);
+    record_button.myParam = url;
+
+    let stop_recording_button = document.getElementById('stop_recording_button');
+    stop_recording_button.addEventListener('click', stopRecording);
+    stop_recording_button.myParam = url;
 
 }
+
 
 // function clickLesson(e){
 //     let url = e.target.myParam + "/" + e.target.innerText;
@@ -195,7 +214,3 @@ function clickLesson(e){
 //     source.connect(context.destination);
 //     source.start();
 // }
-
-
-
-
