@@ -7,7 +7,6 @@ import { createListElement, removeChildNodes } from './index_helpers';
 import { createLessonContainer } from './lesson';
 import { playLesson, stopLessonPlaying, recordLesson, stopRecording } from './lesson_helpers';
 
-
 const CONFIG = require('./config.json');
 let BASE_URL;
 let TOPICS_URL;
@@ -36,6 +35,8 @@ console.log(PLANS_URL);
 
 ListTopicsButton.addEventListener('click', listTopics);
 ListPlansButton.addEventListener('click', listPlans);
+
+
 
 window.onload = function init(){
     console.log("loaded..");

@@ -46,6 +46,7 @@ function stopWav(audioBuffer,playbackAudioContext) {
 }
 
 export function recordLesson(e){
+	//e.target.myParam is the url of the lesson the user played
     console.log(e.target.innerText);
 	console.log(e.target.myParam);
 
@@ -79,26 +80,144 @@ export function recordLesson(e){
 
 export function stopRecording(e){
 	console.log("Stopped recording.....");
+	
+	//e.target.myParam is the url of the lesson the user played
+	let url = e.target.myParam;
+
 	recorderObj.stop();
 	//stop using microphone
 	getUserMediaStream.getAudioTracks()[0].stop();
 
 	//Create wav blog to be posted to server for analysis
 	recorderObj.exportWAV(postWavToServer);
+
+	function postWavToServer(blob){
+		let audio_player_container = document.getElementById('audio_player_container');
+		let blob_url = URL.createObjectURL(blob);
+	
+		let post_recording_btn = document.createElement('btn');
+		let discard_recording_button = document.createElement('btn');
+	
+		post_recording_btn.className = "btn btn-default";
+		post_recording_btn.textContent = "Submit Recording";
+		post_recording_btn.id="post_recording_btn";
+		
+		discard_recording_button.className = "btn btn-default";
+		discard_recording_button.textContent = "Discard Recording";
+		discard_recording_button.id="discard_recording_button";
+	
+		let audio_player = document.createElement('audio');
+		audio_player.id = "audio_player";
+		audio_player.controls = true;
+		audio_player.src = blob_url;
+	
+		audio_player_container.appendChild(audio_player);
+		audio_player_container.appendChild(post_recording_btn);
+		audio_player_container.appendChild(discard_recording_button);
+	
+		//attach event listeners for buttons
+		document.getElementById('post_recording_btn').addEventListener('click',post_recording);
+		document.getElementById('discard_recording_button').addEventListener('click',discard_recording);
+	
+		
+		function post_recording(e){
+			//Server endpoint for non chord lessons is analyse/<dirone>/<dirtwo>/<lesson>
+			//<dirone> is topic (just the word topic NOT topics)
+			//<dirtwo> is the topic ie picking or exercises etc
+			//<lesson> is the actual lesson name like: A_minor_scale_frag_1_LESSON.wav
+			console.log(e.target.innerText);
+			console.log(blob);
+			console.log("post recording to: " + url);
+			let analysis_url = parseUrl(url);
+			console.log(analysis_url);
+			
+			
+			var data = new FormData();
+			data.append('file',blob);
+
+			$.ajax({
+				type: "Post",
+				url: analysis_url,
+				data: data,
+				contentType: false, 
+				processData: false, 
+				success: function (result) {
+					if(result != undefined && result.length > 0)
+						console.log(result);
+				}
+			});
+
+			// data.append("message","This is a message");
+			// $.ajax({
+			// 	type: "Post",
+			// 	url: "http://127.0.0.1:5000/test-post",
+			// 	data: data,
+			// 	processData: false,
+			// 	contentType: false,
+			// 	success: function (result) {
+			// 		if(result != undefined && result.length > 0)
+			// 			console.log(result);
+			// 	}
+			// });
+		}
+	
+		function discard_recording(e){
+			recorderObj.clear();
+		}
+	}// end postWavToServer() 
 }
 
-function postWavToServer(blob){
-	let audio_player_container = document.getElementById('audio_player_container');
-	console.log(blob);
-	let blob_url = URL.createObjectURL(blob);
-	console.log(blob_url);
-
-	let audio_player = document.createElement('audio');
-	audio_player.controls = true;
-	audio_player.src = blob_url;
-
-	audio_player_container.appendChild(audio_player);
-
+function parseUrl(url){
+	//create a new url with HOSTNAME/analyse/<dirone>/<dirtwo>/<lesson>
+	//NOTE: I had originally set the url on the frontend <dirone> to be /topics when for anyalyse part it should just be /topic
+	//TO DO: Fix this
+	let url_corrected = url.replace("topics","topic");
+	let parser = document.createElement('a');
+	parser.href = url_corrected;
+	return parser.protocol + "//" + parser.host + "/analyse" + parser.pathname;     
 }
+
+// function postWavToServer(blob){
+// 	let audio_player_container = document.getElementById('audio_player_container');
+// 	let blob_url = URL.createObjectURL(blob);
+
+// 	let post_recording_btn = document.createElement('btn');
+// 	let discard_recording_button = document.createElement('btn');
+
+// 	post_recording_btn.className = "btn btn-default";
+//     post_recording_btn.textContent = "Submit Recording";
+// 	post_recording_btn.id="post_recording_btn";
+	
+// 	discard_recording_button.className = "btn btn-default";
+//     discard_recording_button.textContent = "Discard Recording";
+//     discard_recording_button.id="discard_recording_button";
+
+// 	let audio_player = document.createElement('audio');
+// 	audio_player.id = "audio_player";
+// 	audio_player.controls = true;
+// 	audio_player.src = blob_url;
+
+// 	audio_player_container.appendChild(audio_player);
+// 	audio_player_container.appendChild(post_recording_btn);
+// 	audio_player_container.appendChild(discard_recording_button);
+
+// 	//attach event listeners for buttons
+// 	document.getElementById('post_recording_btn').addEventListener('click',post_recording);
+// 	document.getElementById('discard_recording_button').addEventListener('click',discard_recording);
+
+// 	///analyse/<dirone>/<dirtwo>/<lesson>
+// 	function post_recording(e){
+// 		console.log(e.target.innerText);
+// 		console.log(blob);
+
+// 	}
+
+// 	function discard_recording(e){
+
+// 	}
+// }
+
+
+
 
 

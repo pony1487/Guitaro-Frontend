@@ -15,3 +15,23 @@ p {
     width: 50%;
     font-size: 18px;
 }
+
+#play_button{
+    margin: 35px;
+}
+
+#stop_button{
+    margin: 35px;
+}
+
+#record_button{
+    margin: 35px;
+}
+
+#stop_recording_button{
+    margin: 35px;
+}
+
+#post_recording_btn{
+    margin: 20px;
+}
