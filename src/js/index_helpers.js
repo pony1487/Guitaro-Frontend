@@ -2,7 +2,7 @@ export function createListElement(array,h2_text,path){
     /*
     Takes an array from a fetch request response and creates a div element contaning a list
     <divid="response_div">
-        <h2></h2>
+        <h2>h2_text</h2> <!--This will be "Lessons" when it is showing a list of lessons -->
         <ul id="response_list" class=path>
             <li id="0"></li>
             <li id="1"></li>
@@ -28,8 +28,19 @@ export function createListElement(array,h2_text,path){
     }
     
     response_div.appendChild(response_unordered_list);
+    console.log(h2_text);
+    //Only add a back button if it the list being created is a list of lessons as opposed to list of topics or plans
+    if(h2_text === "Lessons"){
+        let back_button = document.createElement('button');
+        back_button.className = "btn btn-default";
+        back_button.textContent = "Back";
+        back_button.id="back_button";
+        
+        response_div.appendChild(back_button);
+    }
     return response_div;
 }
+
 
 export function removeChildNodes(element){
     if(element.hasChildNodes()){

@@ -80,6 +80,7 @@ function listTopics(){
     let list_element = createListElement(TOPICS_LIST,"Topics","topics");
     fetch_response_container.appendChild(list_element);
     addEventListenerToList();
+
 }
 
 function listPlans(){
@@ -94,6 +95,7 @@ function listPlans(){
     let list_element = createListElement(PLANS_LIST,"Plans","plans");
     fetch_response_container.appendChild(list_element);
     addEventListenerToList();
+
 }
 
 function addEventListenerToList(){
@@ -124,6 +126,10 @@ function list_lesson_in_topic(path){
             let list_element = createListElement(list,"Lessons",path);
             fetch_response_container.appendChild(list_element);
             addEventListenerToLesson(lesson_path);
+
+            //add event listent to button that was just created in index_helper.js
+            let back_btn = document.getElementById('back_button');
+            back_btn.addEventListener('click',goBackFromLessonsInTopic);
         })
         .catch(error => {
             console.log(error);
@@ -140,10 +146,15 @@ function list_lesson_in_topic(path){
             let list_element = createListElement(list,"Lessons",path);
             fetch_response_container.appendChild(list_element);
             addEventListenerToLesson(lesson_path);
+
+            //add event listent to button that was just created in index_helper.js
+            let back_btn = document.getElementById('back_button');
+            back_btn.addEventListener('click',goBackFromLessonsInPlan);
         })
         .catch(error => {
             console.log(error);
         });
+
     }
 }
 
@@ -191,6 +202,18 @@ function clickLesson(e){
 
 }
 
+
+function goBackFromLessonsInTopic(e){
+    //Fetch the List of Topics again
+    listTopics();
+    console.log("goBackFromTopics");
+}
+
+function goBackFromLessonsInPlan(e){
+    //Fetch the list of Plans again
+    listPlans();
+    console.log("goBackFromPlans");
+}
 
 // function clickLesson(e){
 //     let url = e.target.myParam + "/" + e.target.innerText;
