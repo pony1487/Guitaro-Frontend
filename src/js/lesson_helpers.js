@@ -1,3 +1,5 @@
+import { removeChildNodes } from './index_helpers';
+
 /*
 Code for recording audio was modified from these sources/tutorials:
 https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
@@ -11,7 +13,7 @@ let recordAudioContext;
 
 //TESTING
 let playbackAudioContext = new AudioContext();
-const source = playbackAudioContext.createBufferSource();
+//const source = playbackAudioContext.createBufferSource();
 
 let globalAudioBuffer;
 
@@ -24,7 +26,7 @@ export function loadWavIntoBuffer(url){
         return audioBuffer;
     })
     .then(audioBuffer =>{
-			//playWav(audioBuffer,playbackAudioContext);
+			//playWav(audioBuffer);
 			globalAudioBuffer = audioBuffer;
     });
 
@@ -65,19 +67,16 @@ export function pauseLessonPlaying(e){
 
 
 function playWav() {
-	console.log(source.buffer);
 	
-	//const source = playbackAudioContext.createBufferSource();
+	const source = playbackAudioContext.createBufferSource();
 	source.buffer = globalAudioBuffer;
 	source.connect(playbackAudioContext.destination);
+	//source.start();
 	source.start();
-	
+
 }
 
 function pauseWav() {
-	//const source = playbackAudioContext.createBufferSource();
-    //source.buffer = globalAudioBuffer;
-	//source.connect(playbackAudioContext.destination);
 	let btn = document.getElementById('pause_button');
 	if(playbackAudioContext.state == 'running'){
 		playbackAudioContext.suspend()
@@ -87,6 +86,10 @@ function pauseWav() {
 		playbackAudioContext.resume();
 		btn.innerText = "Pause";
 	}
+}
+
+function stopWav() {
+	//TO DO
 }
 
 export function recordLesson(e){
@@ -192,23 +195,22 @@ export function stopRecording(e){
 					console.log(data);
 				}
 			});
-
-			// data.append("message","This is a message");
-			// $.ajax({
-			// 	type: "Post",
-			// 	url: "http://127.0.0.1:5000/test-post",
-			// 	data: data,
-			// 	processData: false,
-			// 	contentType: false,
-			// 	success: function (result) {
-			// 		if(result != undefined && result.length > 0)
-			// 			console.log(result);
-			// 	}
-			// });
 		}
 	
 		function discard_recording(e){
+			console.log("discard recording");
+			//clear recording buffer
 			recorderObj.clear();
+			//remove audio player and buttons
+			let post_recording_btn = document.getElementById('post_recording_btn');
+			post_recording_btn.remove();
+
+			let audio_player = document.getElementById('audio_player');
+			audio_player.remove();
+
+			let discard_recording_button = document.getElementById('discard_recording_button');
+			discard_recording_button.remove();
+			
 		}
 	}// end postWavToServer() 
 }
