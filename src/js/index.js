@@ -5,7 +5,9 @@ import 'jquery';
 import { ListPlansButton, ListTopicsButton } from './dom-loader';
 import { createListElement, removeChildNodes } from './index_helpers';
 import { createLessonContainer } from './lesson';
-import { playLesson, stopLessonPlaying, recordLesson, stopRecording } from './lesson_helpers';
+import { loadWavIntoBuffer,playLesson, pauseLessonPlaying, recordLesson, stopRecording } from './lesson_helpers';
+import { init_notation } from './notation';
+
 
 const CONFIG = require('./config.json');
 let BASE_URL;
@@ -176,6 +178,7 @@ function clickLesson(e){
     let fetch_response_container = document.getElementById('fetch-response-container');
     removeChildNodes(fetch_response_container);
 
+    loadWavIntoBuffer(url);
     //get lesson element from index.html
     let lesson_element = document.getElementById('lesson');
 
@@ -187,9 +190,9 @@ function clickLesson(e){
     play_button.addEventListener('click', playLesson);
     play_button.myParam = url;
 
-    let stop_button = document.getElementById('stop_button');
-    stop_button.addEventListener('click', stopLessonPlaying);
-    stop_button.myParam = url;
+    let pause_button = document.getElementById('pause_button');
+    pause_button.addEventListener('click', pauseLessonPlaying);
+    pause_button.myParam = url;
 
 
     let record_button = document.getElementById('record_button');

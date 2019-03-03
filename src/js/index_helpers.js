@@ -24,6 +24,10 @@ export function createListElement(array,h2_text,path){
         li.innerText = array[i];
         li.id = i;
         li.className = "list-group-item";
+
+        //let btn = document.createElement('button');
+        //btn.innerText = "Select";
+        //li.appendChild(btn);
         response_unordered_list.appendChild(li);
     }
     

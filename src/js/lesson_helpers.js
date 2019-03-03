@@ -9,40 +9,84 @@ let mediaStreamAudioSourceNode;
 
 let recordAudioContext;
 
+//TESTING
+let playbackAudioContext = new AudioContext();
+const source = playbackAudioContext.createBufferSource();
 
+let globalAudioBuffer;
 
-export function playLesson(e){
-    console.log(e.target.innerText);
-    console.log(e.target.myParam);
-    let url = e.target.myParam;
-
-    var playbackAudioContext = new AudioContext();
+export function loadWavIntoBuffer(url){
     fetch(url)    
     .then(response => response.arrayBuffer())
     .then(arrayBuffer => playbackAudioContext.decodeAudioData(arrayBuffer))
     .then(audioBuffer => {
+		//console.log("In loadWavIntoBuffer");
         return audioBuffer;
     })
     .then(audioBuffer =>{
-            playWav(audioBuffer,playbackAudioContext);
+			//playWav(audioBuffer,playbackAudioContext);
+			globalAudioBuffer = audioBuffer;
     });
+
 }
 
-export function stopLessonPlaying(e){
+// export function playLesson(e){
+//     console.log(e.target.innerText);
+//     console.log(e.target.myParam);
+//     let url = e.target.myParam;
+
+//     var playbackAudioContext = new AudioContext();
+//     fetch(url)    
+//     .then(response => response.arrayBuffer())
+//     .then(arrayBuffer => playbackAudioContext.decodeAudioData(arrayBuffer))
+//     .then(audioBuffer => {
+//         return audioBuffer;
+//     })
+//     .then(audioBuffer =>{
+//             playWav(audioBuffer,playbackAudioContext);
+//     });
+// }
+
+export function playLesson(e){
+	    console.log(e.target.innerText);
+	    console.log(e.target.myParam);
+	    let url = e.target.myParam;
+		playWav();
+}
+
+export function pauseLessonPlaying(e){
     console.log(e.target.myParam);
-    console.log(e.target.innerText);
+	console.log(e.target.innerText);
+	let url = e.target.myParam;
+	pauseWav();
+
+	
 }
 
 
-function playWav(audioBuffer,playbackAudioContext) {
-    const source = playbackAudioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(playbackAudioContext.destination);
-    source.start();
+function playWav() {
+	console.log(source.buffer);
+	
+	//const source = playbackAudioContext.createBufferSource();
+	source.buffer = globalAudioBuffer;
+	source.connect(playbackAudioContext.destination);
+	source.start();
+	
 }
 
-function stopWav(audioBuffer,playbackAudioContext) {
-
+function pauseWav() {
+	//const source = playbackAudioContext.createBufferSource();
+    //source.buffer = globalAudioBuffer;
+	//source.connect(playbackAudioContext.destination);
+	let btn = document.getElementById('pause_button');
+	if(playbackAudioContext.state == 'running'){
+		playbackAudioContext.suspend()
+		btn.innerText = "Resume";
+	}
+	else if(playbackAudioContext.state == 'suspended'){
+		playbackAudioContext.resume();
+		btn.innerText = "Pause";
+	}
 }
 
 export function recordLesson(e){
@@ -131,9 +175,11 @@ export function stopRecording(e){
 			let analysis_url = parseUrl(url);
 			console.log(analysis_url);
 			
-			
+			var user_recording_file = new File([blob], "user_recording.wav", {type: "audio/wav", lastModified: Date.now()})
+			console.log(user_recording_file);
+
 			var data = new FormData();
-			data.append('file',blob);
+			data.append('file',user_recording_file);
 
 			$.ajax({
 				type: "Post",
@@ -141,9 +187,9 @@ export function stopRecording(e){
 				data: data,
 				contentType: false, 
 				processData: false, 
-				success: function (result) {
-					if(result != undefined && result.length > 0)
-						console.log(result);
+				success: function (data) {
+					console.log(typeof data);
+					console.log(data);
 				}
 			});
 

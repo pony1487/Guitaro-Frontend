@@ -31,11 +31,11 @@ export function createLessonContainer(){
     play_button.id="play_button";
     lesson_container.appendChild(play_button);
 
-    let stop_button = document.createElement('btn');
-    stop_button.className = "btn btn-default";
-    stop_button.textContent = "Stop Playing";
-    stop_button.id="stop_button";
-    lesson_container.appendChild(stop_button);
+    let pause_button = document.createElement('btn');
+    pause_button.className = "btn btn-default";
+    pause_button.textContent = "Pause";
+    pause_button.id="pause_button";
+    lesson_container.appendChild(pause_button);
 
     let record_button = document.createElement('btn');
     record_button.className = "btn btn-default";
