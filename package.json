@@ -20,7 +20,12 @@
     "css-loader": "^2.1.0",
     "file-loader": "^3.0.1",
     "jquery": "^3.3.1",
+    "node-sass": "^4.11.0",
+    "popper.js": "^1.14.7",
+    "postcss-loader": "^3.0.0",
+    "precss": "^4.0.0",
     "recorderjs": "^1.0.1",
+    "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "vexflow": "^1.2.88",
     "web-audio-recorder-js": "0.0.2",
@@ -29,7 +34,10 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "bootstrap": "^4.3.1",
+    "bootstrap-loader": "^3.0.2",
     "jquery": "^3.3.1",
+    "popper.js": "^1.14.7",
     "recorderjs": "^1.0.1"
   }
 }

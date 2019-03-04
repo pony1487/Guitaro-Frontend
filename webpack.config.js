@@ -22,6 +22,15 @@ module.exports = {
                 use: [
                     'file-loader'
                 ]
+            },
+            {
+                test: /\.(scss)$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'postcss-loader',
+                    'sass-loader'
+                ]
             }
         ]
     },
@@ -29,6 +38,6 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: 'jquery',
             JQuery: 'jquery'
-        })
+        }),
     ]
 };

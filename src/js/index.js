@@ -1,12 +1,21 @@
-import '../css/main.css';
-import '../css/input-elements.css';
-import 'jquery';
+//import '../css/main.css';
+//import '../css/input-elements.css';
+
+//import 'jquery';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.css';
+
+
+
 
 import { ListPlansButton, ListTopicsButton } from './dom-loader';
 import { createListElement, removeChildNodes } from './index_helpers';
 import { createLessonContainer } from './lesson';
 import { loadWavIntoBuffer,playLesson, pauseLessonPlaying, recordLesson, stopRecording } from './lesson_helpers';
 import { init_notation } from './notation';
+
+
+
 
 
 const CONFIG = require('./config.json');
@@ -40,11 +49,22 @@ ListPlansButton.addEventListener('click', listPlans);
 
 
 
-window.onload = function init(){
+// window.onload = function init(){
+//     console.log("loaded..");
+//     fetchTopics();
+//     fetchPlans();
+// }
+
+$(document).ready(function() {
+
+    //DOM manipulation code
+    init();
+
+});
+function init(){
     console.log("loaded..");
     fetchTopics();
     fetchPlans();
-
 }
 
 function fetchTopics(){
