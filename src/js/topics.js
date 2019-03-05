@@ -5,20 +5,20 @@
 //import 'bootstrap/dist/css/bootstrap.min.css';
 //import 'bootstrap/dist/css/bootstrap.css';
 
-import '../../topics.html';
 
 
 
 
-import { ListPlansButton, ListTopicsButton } from './dom-loader';
-import { createListElement, removeChildNodes } from './index_helpers';
-import { createLessonContainer } from './lesson';
-import { loadWavIntoBuffer,playLesson, pauseLessonPlaying, recordLesson, stopRecording } from './lesson_helpers';
-import { init_notation } from './notation';
+
+// import { ListPlansButton, ListTopicsButton } from './dom-loader';
+// import { createListElement, removeChildNodes } from './index_helpers';
+// import { createLessonContainer } from './lesson';
+// import { loadWavIntoBuffer,playLesson, pauseLessonPlaying, recordLesson, stopRecording } from './lesson_helpers';
+// import { init_notation } from './notation';
 
 
 
-
+console.log("Hello from topics.js");
 
 const CONFIG = require('./config.json');
 let BASE_URL;
@@ -46,17 +46,6 @@ console.log(BASE_URL);
 console.log(TOPICS_URL);
 console.log(PLANS_URL);
 
-ListTopicsButton.addEventListener('click', listTopics);
-ListPlansButton.addEventListener('click', listPlans);
-
-
-
-// window.onload = function init(){
-//     console.log("loaded..");
-//     fetchTopics();
-//     fetchPlans();
-// }
-
 $(document).ready(function() {
 
     //DOM manipulation code
@@ -74,7 +63,7 @@ function fetchTopics(){
     .then(response => response.json())
     .then(json => {
         TOPICS_LIST = json["directories"];
-
+        console.log(TOPICS_LIST);
     })
     .catch(error => {TOPICS_LIST
         console.log(error);
@@ -85,10 +74,17 @@ function fetchPlans(){
     fetch(PLANS_URL) 
     .then(response => response.json())
     .then(json => {
-        PLANS_LIST = json["directories"];
+        PLANS_LIST = json["directories"];   
+        console.log(PLANS_LIST);
     })
     .catch(error => {
         console.log(error);
     });
 }
+
+function createListItem(){
+    
+}
+
+
 

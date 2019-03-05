@@ -1,12 +1,16 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: './src/js/index.js',
+    entry: {
+        index: './src/js/index.js',
+        topics: './src/js/topics.js'
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
+        filename: '[name].bundle.js',
         publicPath: '/dist'
     },
     module: {
@@ -36,28 +40,25 @@ module.exports = {
         ]
     },
     plugins:[
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: 'index.html'
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'test.html',
-            template: './test.html',
-            chunks:[]
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'account.html',
-            template: 'account.html',
-            chunks:[]
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'topics.html',
-            template: 'topics.html',
-            chunks:[]
-        }),
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            JQuery: 'jquery'
-        }),
+        // new HtmlWebpackPlugin({
+        //     filename: 'index.html',
+        //     template: 'src/index.html',
+        //     chunks:['index']
+        // }),
+        // // new HtmlWebpackPlugin({
+        // //     filename: 'account.html',
+        // //     template: 'account.html',
+        // //     chunks:[]
+        // // }),
+        // new HtmlWebpackPlugin({
+        //     filename: 'topics.html',
+        //     template: 'src/topics.html',
+        //     chunks:['topics']
+        // }),
+        // new webpack.ProvidePlugin({
+        //     $: 'jquery',
+        //     JQuery: 'jquery'
+        // }),
+        // new CleanWebpackPlugin()
     ]
 };
