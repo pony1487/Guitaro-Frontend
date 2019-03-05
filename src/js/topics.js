@@ -35,16 +35,11 @@ function fetchTopics(){
     fetch(TOPICS_URL) 
     .then(response => response.json())
     .then(json => {
-        if (TOPICS_LIST == null) {
+
             TOPICS_LIST = json["directories"];
             createListItem(TOPICS_LIST,"topics_list");
             addEventListenerToLesson();
             //console.log(TOPICS_LIST);
-        }
-        else
-        {
-            console.log("Fetch topics already done");
-        }
        
     })
     .catch(error => {
@@ -99,30 +94,15 @@ function addEventListenerToLesson(lesson_path){
 }
 
 function clickLesson(e){
-    console.log(e.target.innerText);
+    //console.log(e.target.innerText);
     list_lesson_in_topic(e.target.innerText);
 }
 
-
-/*
-$(document).ready(function(){
-  $(".btn1").click(function(){
-    $("#topics").hide();
-    $("#lessons_in_topic").show();
-  });
-  $(".btn2").click(function(){
-    $("#lessons_in_topic").hide();
-    $("#topics").show();
-  });
-});
-*/
-
 function list_lesson_in_topic(path){
 
-    let element = document.getElementById('lesson_in_topic_list');
-    console.log(element.childNodes.length);
-    console.log("TEST!!!!!!!!!!!!!!");
-    let list;
+    //clear any previous fetched lessons
+    $("#lesson_in_topic_list").empty();
+
     // If it is a topic lesson
     if(TOPICS_LIST.includes(path)){
         let lesson_path = TOPICS_URL + "/" + path;
@@ -131,21 +111,15 @@ function list_lesson_in_topic(path){
         .then(response => response.json())
         .then(json => {
                 
-                list = json["files"];
-                console.log(list);
+            let list = json["files"];
+            console.log(list);
 
-                if(!$(lessons_in_topic_container).is(":visible")){
-                    $("#lessons_in_topic_container").show();
-                } 
+            if(!$("#lessons_in_topic_container").is(":visible")){
+                $("#lessons_in_topic_container").show();
+            } 
 
-                $("#topic_list_container").hide();
-
-                if(element.childNodes.length > 0){
-                    console.log("data already fetched");
-                }
-                else{
-                    createListItem(list,"lesson_in_topic_list");
-                }
+            $("#topic_list_container").hide();
+            createListItem(list,"lesson_in_topic_list");
             
         })
         .catch(error => {
