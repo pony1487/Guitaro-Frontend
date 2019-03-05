@@ -1,5 +1,6 @@
 import { processFeedbackJSON } from './lesson_feedback';
-
+import 'jquery';
+import 'bootstrap';
 /*
 Code for recording audio was modified from these sources/tutorials:
 https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
@@ -148,11 +149,11 @@ export function stopRecording(e){
 		let post_recording_btn = document.createElement('btn');
 		let discard_recording_button = document.createElement('btn');
 	
-		post_recording_btn.className = "btn btn-default";
+		post_recording_btn.className = "btn btn-secondary";
 		post_recording_btn.textContent = "Submit Recording";
 		post_recording_btn.id="post_recording_btn";
 		
-		discard_recording_button.className = "btn btn-default";
+		discard_recording_button.className = "btn btn-secondary";
 		discard_recording_button.textContent = "Discard Recording";
 		discard_recording_button.id="discard_recording_button";
 	
@@ -175,6 +176,10 @@ export function stopRecording(e){
 			//<dirone> is topic (just the word topic NOT topics)
 			//<dirtwo> is the topic ie picking or exercises etc
 			//<lesson> is the actual lesson name like: A_minor_scale_frag_1_LESSON.wav
+
+			//show progress bar
+			$('#uploadProgressModal').modal('show');
+
 			console.log(e.target.innerText);
 			console.log(blob);
 			console.log("post recording to: " + url);
@@ -195,9 +200,25 @@ export function stopRecording(e){
 				processData: false, 
 				success: function (data) {
 					recordingPresent = false;
+					$('#uploadProgressModal').modal('hide');
 					processFeedbackJSON(data);
-				}
+					showFeedbackModel();
+				},
+				error: function(xhr, status, error) {
+					console.log(xhr);
+					console.log(status);
+					console.log(error);
+					alert("xhr: " + xhr + "\nStatus: " + status +"\nError: " + error);
+				 },
 			});
+		}
+
+		function showFeedbackModel(){
+			//enable any popovers on page. There is one in the modal
+			$(function () {
+				$('[data-toggle="popover"]').popover()
+			})
+			$('#feedbackModal').modal('show');
 		}
 	
 		function discard_recording(e){

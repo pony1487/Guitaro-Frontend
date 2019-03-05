@@ -26,26 +26,26 @@ export function createLessonContainer(){
     lesson_container.appendChild(br);
     
     let play_button = document.createElement('btn');
-    play_button.className = "btn btn-default";
+    play_button.className = "btn btn-secondary";
     play_button.textContent = "Play";
     play_button.id="play_button";
     lesson_container.appendChild(play_button);
 
     let pause_button = document.createElement('btn');
-    pause_button.className = "btn btn-default";
+    pause_button.className = "btn btn-secondary";
     pause_button.textContent = "Pause";
     pause_button.id="pause_button";
     lesson_container.appendChild(pause_button);
 
     let record_button = document.createElement('btn');
-    record_button.className = "btn btn-default";
+    record_button.className = "btn btn-secondary";
     record_button.textContent = "Record";
     record_button.id="record_button";
     record_button.disabled = false;
     lesson_container.appendChild(record_button);
 
     let stop_recording_button = document.createElement('btn');
-    stop_recording_button.className = "btn btn-default";
+    stop_recording_button.className = "btn btn-secondary";
     stop_recording_button.textContent = "Stop Recording";
     stop_recording_button.id="stop_recording_button";
     lesson_container.appendChild(stop_recording_button);

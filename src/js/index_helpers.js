@@ -36,7 +36,7 @@ export function createListElement(array,h2_text,path){
     //Only add a back button if it the list being created is a list of lessons as opposed to list of topics or plans
     if(h2_text === "Lessons"){
         let back_button = document.createElement('button');
-        back_button.className = "btn btn-default";
+        back_button.className = "btn btn-secondary";
         back_button.textContent = "Back";
         back_button.id="back_button";
         
