@@ -6,7 +6,9 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         index: './src/js/index.js',
-        topics: './src/js/topics.js'
+        topics: './src/js/topics.js',
+        plans: './src/js/plans.js',
+        lessons: './src/js/lessons.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -55,10 +57,10 @@ module.exports = {
         //     template: 'src/topics.html',
         //     chunks:['topics']
         // }),
-        // new webpack.ProvidePlugin({
-        //     $: 'jquery',
-        //     JQuery: 'jquery'
-        // }),
-        // new CleanWebpackPlugin()
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            JQuery: 'jquery'
+        }),
+        new CleanWebpackPlugin()
     ]
 };
