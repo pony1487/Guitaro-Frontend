@@ -8,7 +8,7 @@ module.exports = {
         index: './src/js/index.js',
         topics: './src/js/topics.js',
         plans: './src/js/plans.js',
-        lessons: './src/js/lessons.js'
+        audio_processor: './src/js/audio_processor.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

@@ -1,3 +1,5 @@
+import { loadWavIntoBuffer } from './audio_processor';
+
 const CONFIG = require('./config.json');
 let BASE_URL;
 let TOPICS_URL;
@@ -38,7 +40,7 @@ function fetchTopics(){
 
             TOPICS_LIST = json["directories"];
             createListItem(TOPICS_LIST,"topics_list");
-            addEventListenerToLesson();
+            addEventListenerToTopic();
             //console.log(TOPICS_LIST);
        
     })
@@ -58,7 +60,6 @@ function createListItem(array,elementid){
     */
     let element = document.getElementById(elementid);
     for(let i = 0;i < array.length;i++){
-        console.log(array[i]);
         let btn = document.createElement('button');
         btn.innerText = array[i];
         btn.id = i;
@@ -73,7 +74,6 @@ function createListItem(array,elementid){
         backbutton.addEventListener('click',click_back_button);
 
         function click_back_button(e){
-            console.log("Click");
             $("#lessons_in_topic_container").hide();
             $("#topic_list_container").show();
         }
@@ -82,19 +82,19 @@ function createListItem(array,elementid){
     }
 }
 
-function addEventListenerToLesson(lesson_path){
+function addEventListenerToTopic(lesson_path){
     let ul = document.getElementById('topics_list');
     let buttons = ul.getElementsByTagName('button');
 
     for(let i = 0; i < buttons.length;i++)
     {
-        buttons[i].addEventListener('click', clickLesson);
+        buttons[i].addEventListener('click', clickPlan);
         buttons[i].myParam = lesson_path;
     }
 }
 
-function clickLesson(e){
-    //console.log(e.target.innerText);
+function clickPlan(e){
+    console.log(e.target.innerText);
     list_lesson_in_topic(e.target.innerText);
 }
 
@@ -106,13 +106,11 @@ function list_lesson_in_topic(path){
     // If it is a topic lesson
     if(TOPICS_LIST.includes(path)){
         let lesson_path = TOPICS_URL + "/" + path;
-        console.log(lesson_path);
         fetch(lesson_path) 
         .then(response => response.json())
         .then(json => {
                 
             let list = json["files"];
-            console.log(list);
 
             if(!$("#lessons_in_topic_container").is(":visible")){
                 $("#lessons_in_topic_container").show();
@@ -120,6 +118,7 @@ function list_lesson_in_topic(path){
 
             $("#topic_list_container").hide();
             createListItem(list,"lesson_in_topic_list");
+            addEventListenerToLesson(lesson_path);
             
         })
         .catch(error => {
@@ -127,6 +126,36 @@ function list_lesson_in_topic(path){
         });
     }
 }
+
+function addEventListenerToLesson(lesson_path){
+    let ul = document.getElementById('lesson_in_topic_list');
+    let buttons = ul.getElementsByTagName('button');
+
+    for(let i = 0; i < buttons.length;i++)
+    {
+        buttons[i].addEventListener('click', clickLesson);
+        buttons[i].myParam = lesson_path;
+    }
+}
+
+function clickLesson(e){
+    let url = e.target.myParam + "/" + e.target.innerText;
+
+    //backbutton is a clickable list element as well.
+    //dont change page to audioprocessor.html if user clicks back button
+    if(e.target.innerText != "Back"){
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem('url', url);
+            window.location = "audio_processor.html";
+        } else {
+            console.log("no local storage support");
+        }
+    }
+}
+
+
+
+
 
 
 

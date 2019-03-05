@@ -41,7 +41,7 @@ function fetchPlans(){
         PLANS_LIST = json["directories"];   
         //console.log(PLANS_LIST);
         createListItem(PLANS_LIST,"plans_list");
-        addEventListenerToLesson();
+        addEventListenerToPlan();
     })
     .catch(error => {
         console.log(error);
@@ -81,18 +81,18 @@ function createListItem(array,elementid){
     }
 }
 
-function addEventListenerToLesson(lesson_path){
+function addEventListenerToPlan(lesson_path){
     let ul = document.getElementById('plans_list');
     let buttons = ul.getElementsByTagName('button');
 
     for(let i = 0; i < buttons.length;i++)
     {
-        buttons[i].addEventListener('click', clickLesson);
+        buttons[i].addEventListener('click', clickPlan);
         buttons[i].myParam = lesson_path;
     }
 }
 
-function clickLesson(e){
+function clickPlan(e){
     //console.log(e.target.innerText);
     list_lesson_in_plan(e.target.innerText);
 }
