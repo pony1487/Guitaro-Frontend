@@ -3,16 +3,12 @@ Code for recording audio was modified from these sources/tutorials:
 https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
 https://addpipe.com/blog/using-recorder-js-to-capture-wav-audio-in-your-html5-web-site/
 */
+var audio_recorder_methods = require('./audio_recorder.js');
+var recordLesson = audio_recorder_methods.recordLesson;
+var stopRecording = audio_recorder_methods.stopRecording;
 
 const PlaybackController = require('./PlaybackController.js');
 let playbackController = new PlaybackController();
-
-let getUserMediaStream;
-let recorderObj;
-let mediaStreamAudioSourceNode;
-let recordAudioContext;
-let recordingPresent = false
-
 
 $(document).ready(function() {
     init();
@@ -21,6 +17,7 @@ $(document).ready(function() {
 function init(){
     console.log("Hello from audio processor");
     console.log(localStorage.getItem("url"));
+    setHeaderToLessonName(localStorage.getItem("url"));
 
     let play_button = document.getElementById('play_button');
     play_button.addEventListener('click', playLesson);
@@ -31,6 +28,12 @@ function init(){
     let pause_button = document.getElementById('pause_button');
     pause_button.addEventListener('click', pauseLesson);
 
+    let record_button = document.getElementById('record_button');
+    record_button.addEventListener('click', recordLesson);
+
+
+    let stop_recording_button = document.getElementById('stop_button');
+    stop_recording_button.addEventListener('click', stopRecording);
     
     loadWavIntoBuffer();
 }
@@ -102,4 +105,14 @@ function pauseLesson(e){
         btn.innerText = "Suspended";
         btn.className = "btn btn-warning";
 	}
+}
+
+function setHeaderToLessonName(url){
+
+    let header = document.getElementById('lesson_header');
+    let parser = document.createElement('a');
+    parser.href = url;
+    let arr = parser.pathname.split("/");
+    header.innerText += ": " +  arr[3];
+    
 }
