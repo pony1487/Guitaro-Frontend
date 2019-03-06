@@ -28,6 +28,7 @@ console.log(PLANS_URL);
 $(document).ready(function() {
     init();
 });
+
 function init(){
     console.log("loaded..");
     fetchTopics();
@@ -41,7 +42,6 @@ function fetchTopics(){
             TOPICS_LIST = json["directories"];
             createListItem(TOPICS_LIST,"topics_list");
             addEventListenerToTopic();
-            //console.log(TOPICS_LIST);
        
     })
     .catch(error => {

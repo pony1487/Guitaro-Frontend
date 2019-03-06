@@ -118,10 +118,37 @@ function list_lesson_in_plan(path){
 
             $("#plans_list_container").hide();
             createListItem(list,"lesson_in_plan_list");
+            addEventListenerToLesson(lesson_path);
         })
         .catch(error => {
             console.log(error);
         });
+    }
+}
+
+function addEventListenerToLesson(lesson_path){
+    let ul = document.getElementById('lesson_in_plan_list');
+    let buttons = ul.getElementsByTagName('button');
+
+    for(let i = 0; i < buttons.length;i++)
+    {
+        buttons[i].addEventListener('click', clickLesson);
+        buttons[i].myParam = lesson_path;
+    }
+}
+
+function clickLesson(e){
+    let url = e.target.myParam + "/" + e.target.innerText;
+
+    //backbutton is a clickable list element as well.
+    //dont change page to audioprocessor.html if user clicks back button
+    if(e.target.innerText != "Back"){
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem('url', url);
+            window.location = "audio_processor.html";
+        } else {
+            console.log("no local storage support");
+        }
     }
 }
 
