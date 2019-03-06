@@ -3,9 +3,11 @@ Code for recording audio was modified from these sources/tutorials:
 https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
 https://addpipe.com/blog/using-recorder-js-to-capture-wav-audio-in-your-html5-web-site/
 */
-var audio_recorder_methods = require('./audio_recorder.js');
-var recordLesson = audio_recorder_methods.recordLesson;
-var stopRecording = audio_recorder_methods.stopRecording;
+// var audio_recorder_methods = require('./audio_recorder.js');
+// var recordLesson = audio_recorder_methods.recordLesson;
+// var stopRecording = audio_recorder_methods.stopRecording;
+
+import { stopRecording,recordLesson } from './audio_recorder';
 
 const PlaybackController = require('./PlaybackController.js');
 let playbackController = new PlaybackController();
@@ -16,7 +18,6 @@ $(document).ready(function() {
 
 function init(){
     console.log("Hello from audio processor");
-    console.log(localStorage.getItem("url"));
     setHeaderToLessonName(localStorage.getItem("url"));
 
     let play_button = document.getElementById('play_button');
@@ -66,8 +67,8 @@ $(document).ready(function(){
 
 
 function loadWavIntoBuffer(){
-    console.log(localStorage.getItem("url"));
-    url = localStorage.getItem("url");
+    console.log("loadWavIntoBuffer" + localStorage.getItem("url"));
+    let url = localStorage.getItem("url");
     fetch(url)    
     .then(response => response.arrayBuffer())
     .then(arrayBuffer => {

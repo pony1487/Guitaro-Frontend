@@ -1,10 +1,16 @@
+import 'jquery';
+import 'bootstrap';
+
+import { processFeedbackJSON } from './lesson_feedback';
+
+
 let getUserMediaStream;
 let recorderObj;
 let mediaStreamAudioSourceNode;
 let recordAudioContext;
 let recordingPresent = false
 
-function recordLesson(e){
+export function recordLesson(e){
     
 	//Audio only
 	let constraints = { audio: true, video:false }
@@ -37,7 +43,7 @@ function recordLesson(e){
 	}
 }
 
-function stopRecording(e){
+export function stopRecording(e){
     console.log("Stopped recording.....");
    
     let url = localStorage.getItem("url");
@@ -48,110 +54,104 @@ function stopRecording(e){
 	getUserMediaStream.getAudioTracks()[0].stop();
 
 	//Create wav blog to be posted to server for analysis
-	recorderObj.exportWAV(postWavToServer);
+	recorderObj.exportWAV(createAudioElement);
     recordingPresent = true;
     
-    function postWavToServer(blob){
-        console.log(blob);
-    }
+}
 
-// 	function postWavToServer(blob){
-// 		let audio_player_container = document.getElementById('audio_player_container');
-// 		let blob_url = URL.createObjectURL(blob);
-   
-// 		let post_recording_btn = document.createElement('btn');
-// 		let discard_recording_button = document.createElement('btn');
-   
-// 		post_recording_btn.className = "btn btn-secondary";
-// 		post_recording_btn.textContent = "Submit Recording";
-// 		post_recording_btn.id="post_recording_btn";
-       
-// 		discard_recording_button.className = "btn btn-secondary";
-// 		discard_recording_button.textContent = "Discard Recording";
-// 		discard_recording_button.id="discard_recording_button";
-   
-// 		let audio_player = document.createElement('audio');
-// 		audio_player.id = "audio_player";
-// 		audio_player.controls = true;
-// 		audio_player.src = blob_url;
-   
-// 		audio_player_container.appendChild(audio_player);
-// 		audio_player_container.appendChild(post_recording_btn);
-// 		audio_player_container.appendChild(discard_recording_button);
-   
-// 		//attach event listeners for buttons
-// 		document.getElementById('post_recording_btn').addEventListener('click',post_recording);
-// 		document.getElementById('discard_recording_button').addEventListener('click',discard_recording);
-   
-       
-// 		function post_recording(e){
-// 			//Server endpoint for non chord lessons is analyse/<dirone>/<dirtwo>/<lesson>
-// 			//<dirone> is topic (just the word topic NOT topics)
-// 			//<dirtwo> is the topic ie picking or exercises etc
-// 			//<lesson> is the actual lesson name like: A_minor_scale_frag_1_LESSON.wav
 
-// 			//show progress bar
-// 			$('#uploadProgressModal').modal('show');
+function createAudioElement(blob){
+    //hide the playback controls
+    $("#playback_and_recording_controls").hide();
 
-// 			console.log(e.target.innerText);
-// 			console.log(blob);
-// 			console.log("post recording to: " + url);
-// 			let analysis_url = parseUrl(url);
-// 			console.log(analysis_url);
-           
-// 			var user_recording_file = new File([blob], "user_recording.wav", {type: "audio/wav", lastModified: Date.now()})
-// 			console.log(user_recording_file);
+    let audio_player_container = document.getElementById('audio_player_container');
+    console.log(audio_player_container);
+    let blob_url = URL.createObjectURL(blob);
 
-// 			var data = new FormData();
-// 			data.append('file',user_recording_file);
+    let post_recording_btn = document.createElement('btn');
+    let discard_recording_button = document.createElement('btn');
 
-// 			$.ajax({
-// 				type: "Post",
-// 				url: analysis_url,
-// 				data: data,
-// 				contentType: false, 
-// 				processData: false, 
-// 				success: function (data) {
-// 					recordingPresent = false;
-// 					$('#uploadProgressModal').modal('hide');
-// 					processFeedbackJSON(data);
-// 					showFeedbackModel();
-// 				},
-// 				error: function(xhr, status, error) {
-// 					console.log(xhr);
-// 					console.log(status);
-// 					console.log(error);
-// 					alert("xhr: " + xhr + "\nStatus: " + status +"\nError: " + error);
-// 				 },
-// 			});
-// 		}
+    post_recording_btn.className = "btn btn-secondary";
+    post_recording_btn.textContent = "Submit Recording";
+    post_recording_btn.id="post_recording_btn";
 
-// 		function showFeedbackModel(){
-// 			//enable any popovers on page. There is one in the modal
-// 			$(function () {
-// 				$('[data-toggle="popover"]').popover()
-// 			})
-// 			$('#feedbackModal').modal('show');
-// 		}
-   
-// 		function discard_recording(e){
-// 			console.log("discard recording");
-// 			//clear recording buffer
-// 			recorderObj.clear();
-// 			//remove audio player and buttons
-// 			let post_recording_btn = document.getElementById('post_recording_btn');
-// 			post_recording_btn.remove();
+    discard_recording_button.className = "btn btn-secondary";
+    discard_recording_button.textContent = "Discard Recording";
+    discard_recording_button.id="discard_recording_button";
 
-// 			let audio_player = document.getElementById('audio_player');
-// 			audio_player.remove();
+    let audio_player = document.createElement('audio');
+    console.log(audio_player);
+    audio_player.id = "audio_player";
+    audio_player.controls = true;
+    audio_player.src = blob_url;
 
-// 			let discard_recording_button = document.getElementById('discard_recording_button');
-// 			discard_recording_button.remove();
 
-// 			recordingPresent = false;
-           
-// 		}
-// 	}// end postWavToServer() 
+    audio_player_container.appendChild(audio_player);
+    audio_player_container.appendChild(post_recording_btn);
+    audio_player_container.appendChild(discard_recording_button);
+
+    //attach event listeners for buttons
+    document.getElementById('post_recording_btn').addEventListener('click',post_recording);
+    post_recording_btn.blob = blob;
+    document.getElementById('discard_recording_button').addEventListener('click',discard_recording);
+}
+
+function post_recording(e){
+    //Server endpoint for non chord lessons is analyse/<dirone>/<dirtwo>/<lesson>
+    //<dirone> is topic (just the word topic NOT topics)
+    //<dirtwo> is the topic ie picking or exercises etc
+    //<lesson> is the actual lesson name like: A_minor_scale_frag_1_LESSON.wav
+
+    let url = localStorage.getItem("url");
+    //show progress bar
+    $('#uploadProgressModal').modal('show');
+
+    //get the blob to post
+    let blob = e.target.blob;
+    console.log("post recording to: " + url);
+    let analysis_url = createAnalysisUrl(url);
+    console.log(analysis_url);
+    
+    var user_recording_file = new File([blob], "user_recording.wav", {type: "audio/wav", lastModified: Date.now()})
+    console.log(user_recording_file);
+
+    var data = new FormData();
+    data.append('file',user_recording_file);
+
+    $.ajax({
+        type: "Post",
+        url: analysis_url,
+        data: data,
+        contentType: false, 
+        processData: false, 
+        success: function (data) {
+            recordingPresent = false;
+            console.log(data);
+            $('#uploadProgressModal').modal('hide');
+            processFeedbackJSON(data);
+            showFeedbackModel();
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
+            alert("xhr: " + xhr + "\nStatus: " + status +"\nError: " + error);
+            },
+    });
+}
+
+function discard_recording(e){
+    //remove the audio player and buttons
+    document.getElementById('audio_player').remove();
+    document.getElementById('discard_recording_button').remove();
+    document.getElementById('post_recording_btn').remove();
+
+    //clear the recording and allow another to be made
+    recorderObj.clear();
+    recordingPresent = false;
+    
+    //allow the user to make another recording
+    $("#playback_and_recording_controls").show();
 }
 
 function displayCountIn(bpm){
@@ -171,7 +171,39 @@ function displayCountIn(bpm){
 	}, count_in_seconds);
 }
 
-module.exports = {
-    recordLesson: recordLesson,
-    stopRecording: stopRecording
+
+function createAnalysisUrl(url){
+	//create a new url with HOSTNAME/analyse/<dirone>/<dirtwo>/<lesson>
+	if(url.includes("topics")){
+		let parser = document.createElement('a');
+		parser.href = url;
+		//find if its a chord to be analysed. Chord lessons are prefixed with chords. EG chord_<lesson>.wav
+		let arr = parser.pathname.split("/");
+		if(arr[3].includes("chord_")){
+			return parser.protocol + "//" + parser.host + "/analyse-chords" + parser.pathname; 
+		}
+		else{
+			return parser.protocol + "//" + parser.host + "/analyse" + parser.pathname;     
+		}
+	}
+	if(url.includes("plans")){
+		let parser = document.createElement('a');
+		parser.href = url;
+		//find if its a chord to be analysed. Chord lessons are prefixed with chords. EG chord_<lesson>.wav
+		let arr = parser.pathname.split("/");
+		if(arr[3].includes("chord_")){
+			return parser.protocol + "//" + parser.host + "/analyse-chords" + parser.pathname; 
+		}
+		else{
+			return parser.protocol + "//" + parser.host + "/analyse" + parser.pathname;     
+		}
+	}
+}
+
+function showFeedbackModel(){
+    //enable any popovers on page. There is one in the modal
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+    $('#feedbackModal').modal('show');
 }
