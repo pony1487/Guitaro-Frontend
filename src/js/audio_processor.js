@@ -8,9 +8,11 @@ https://addpipe.com/blog/using-recorder-js-to-capture-wav-audio-in-your-html5-we
 // var stopRecording = audio_recorder_methods.stopRecording;
 
 import { stopRecording,recordLesson } from './audio_recorder';
+import { init_notation } from './lesson_notation';
 
 const PlaybackController = require('./PlaybackController.js');
 let playbackController = new PlaybackController();
+
 
 $(document).ready(function() {
     init();
@@ -36,6 +38,7 @@ function init(){
     let stop_recording_button = document.getElementById('stop_button');
     stop_recording_button.addEventListener('click', stopRecording);
     
+    init_notation();
     loadWavIntoBuffer();
 }
 
@@ -50,18 +53,23 @@ $(document).ready(function(){
         let record_button = document.getElementById("record_button");
         record_button.className = "btn btn-secondary";
         record_button.innerText = "Record";
+
     });
 
     $("#play_button").click(function(){
         let play_button = document.getElementById("play_button");
         play_button.className = "btn btn-success";
         play_button.innerText = "Playing";
+        console.log(playbackController.checkIsPlaying());
+
     });
 
     $("#stop_playing_button").click(function(){
         let play_button = document.getElementById("play_button");
         play_button.className = "btn btn-secondary";
         play_button.innerText = "Play";
+        console.log(playbackController.checkIsPlaying());
+
     });
 });
 
