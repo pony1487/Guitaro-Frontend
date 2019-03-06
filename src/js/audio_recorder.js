@@ -1,7 +1,8 @@
 import 'jquery';
 import 'bootstrap';
 
-import { processFeedbackJSON } from './lesson_feedback';
+//NOTE to self: This is how you add mutliple js files into one dist bundle. Export it from <blah>.js
+var processFeedbackJSON = require('./lesson_feedback');
 
 
 let getUserMediaStream;

@@ -93,8 +93,7 @@
 
 */
 
-
-export function processFeedbackJSON(feedBackObj){
+function processFeedbackJSON(feedBackObj){
 
     console.log("feedback: " + feedBackObj.feedback);
     console.log("lesson: " + feedBackObj.lesson);
@@ -124,3 +123,5 @@ export function processFeedbackJSON(feedBackObj){
 
 
 }
+
+module.exports = processFeedbackJSON;

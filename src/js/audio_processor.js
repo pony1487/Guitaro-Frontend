@@ -71,19 +71,31 @@ function loadWavIntoBuffer(){
     let url = localStorage.getItem("url");
     fetch(url)    
     .then(response => response.arrayBuffer())
+    .catch(error =>{
+        console.log(error);
+    })
     .then(arrayBuffer => {
-        pbc = playbackController.getAudioContext();
+        let pbc = playbackController.getAudioContext();
         return pbc.decodeAudioData(arrayBuffer);
+    })
+    .catch(error =>{
+        console.log(error);
     })
     .then(audioBuffer => {
         return audioBuffer;
     })
+    .catch(error =>{
+        console.log(error);
+    })
     .then(audioBuffer =>{
-        globalAudioBuffer = audioBuffer;
         playbackController.setAudioBuffer(audioBuffer);
         playbackController.printAudioBuffer();
+    }).catch(error =>{
+        alert("Something went wrong: Could not fetch audio file!");
+        console.log(error);
     });
 }
+
 
 function playLesson(e){
     playbackController.playAudio();
