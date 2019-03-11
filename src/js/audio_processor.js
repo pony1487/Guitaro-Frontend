@@ -38,7 +38,8 @@ function init(){
     let stop_recording_button = document.getElementById('stop_button');
     stop_recording_button.addEventListener('click', stopRecording);
     
-    init_notation();
+    //DEBUG: There will have to be a fetch done to process the lesson first to show it to the user!
+    //init_notation();
     loadWavIntoBuffer();
 }
 
