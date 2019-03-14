@@ -24,11 +24,24 @@ class NotationDrawer{
         this.notes.push(vf_tab_note);
     }
 
-    createVoice(){
+    printNotes(){
+        for(let i = 0; i < this.notes.length; i++){
+            console.log(this.notes[i].positions);
+            console.log(this.notes[i].duration);
+        }
+
+    }
+
+    createVoice(beat_count){
         // Create a voice in 4/4 and add notes
         //NOTE: the num of beats has to match number of notes
-        this.voice = new this.VF.Voice({num_beats: 4,  beat_value: 4});
-        this.voice.addTickables(this.notes);
+        try{
+            this.voice = new this.VF.Voice({num_beats: beat_count,  beat_value: 4});
+            this.voice.addTickables(this.notes);
+            this.voice.setStrict(false);
+        }catch(err){
+            console.log(err);
+        }
 
     }
 
@@ -62,64 +75,62 @@ export function init_notation(){
     notationDrawer.render();
 }
 
-export function draw_tab(lesson_string_list,lesson_fret_list,user_string_list,user_fret_list){
-    //console.log(lesson_string_list);
-    console.log(lesson_fret_list);
-    //console.log(user_string_list);
-    //console.log(user_fret_list);
+export function draw_tab(lesson_string_list,lesson_fret_list,lesson_note_durations,total_beats_after_padding){
+    console.log("lesson_string_list: " + lesson_string_list);
+    console.log("lesson_fret_list: " + lesson_fret_list);
+    console.log("lesson_note_durations: " + lesson_note_durations);
 
-    //The lesson arrays(frets and strings) are the same size. Same for the user arrays
-    let len = lesson_fret_list.length;
-
+    let lesson_note_durations_length = lesson_note_durations.length;
     let lesson_notation = document.getElementById("lesson_notation");
+    let lesson_fret_list_length = lesson_fret_list.length;
+
     let notationDrawer = new NotationDrawer(lesson_notation);
 
-    for(let i = 0; i < len; i++){
+    let total_beats = 0;
+
+    for(let i = 0; i < lesson_note_durations_length; i++){
         //console.log(lesson_fret_list[i])
 
-        let str = lesson_string_list[i];
-        let fret = lesson_fret_list[i];
+        // get the notes played. else draw the padding
+        if (i < lesson_fret_list_length){
+            let str = lesson_string_list[i];
+            let fret = lesson_fret_list[i];
+            let note_duration = lesson_note_durations[i];
+    
+            let str_num = string_note_to_number_mapping[str];
+            let dur = duration_mapping[note_duration]
+    
+            let tab_note ={
+                positions: [{str: str_num, fret: fret}],
+                duration: dur
+            }
+    
+            //total_beats += dur / 4;
+            console.log("total_beats: " + total_beats);
+            //console.log(tab_note.positions);
+            //console.log(tab_note.duration);
+            notationDrawer.setNotes(tab_note);
 
-        let str_num = string_note_to_number_mapping[str];
-        let tab_note ={
-            positions: [{str: str_num, fret: fret}],
-            duration: "8"
+        }
+        else{
+            // let dur = duration_mapping[lesson_note_durations[i]];
+            // let tab_note ={
+            //     positions: [{str: 0, fret: 0}],
+            //     // Make it a rest
+            //     duration: dur + "r"
+            // }
+            // notationDrawer.setNotes(tab_note);
         }
 
-        //console.log(tab_note.positions[0]);
-        notationDrawer.setNotes(tab_note);
     }
-
-    notationDrawer.createVoice();
+    notationDrawer.printNotes()
+    
+    notationDrawer.createVoice(total_beats_after_padding);
     notationDrawer.formatAndJustify();
     notationDrawer.render();
 
 
 }
-/*
-for(let i = 0; i <  strings.length;i++){
-	let key = strings[i]
-  console.log(key);
-	console.log(string_note_to_number_mapping[key]);
-}
-
-*/
-/*
-This is what is sent from server:
-    "user_note_list": [
-        "A",
-        "C",
-        "D",
-        "E",
-        "G"
-    ],
-    "user_string_list": [
-        "E",
-        "E",
-        "A",
-        "A",
-        "D"
-*/
 
 let string_note_to_number_mapping = {
     E: 6,
@@ -128,4 +139,23 @@ let string_note_to_number_mapping = {
     G: 3,
     B: 2,
     e: 1 
+}
+
+//for tab_note
+let duration_mapping = {
+    whole:"1", 
+    half:"2", 
+    quarter:"4", 
+    eight:"8", 
+    sixteenth:"16",
+    thiry_second: "32"
+}
+
+let beat_count = {
+    whole:"4", 
+    half:"2", 
+    quarter:"1", 
+    eight:"0.5", 
+    sixteenth:"0.25",
+    thiry_second: "0.125"
 }
