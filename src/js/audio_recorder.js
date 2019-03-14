@@ -47,6 +47,7 @@ export function recordLesson(e){
 
 export function stopRecording(e){
     console.log("Stopped recording.....");
+
    
     let url = localStorage.getItem("url");
     console.log(url);
@@ -160,17 +161,21 @@ function displayCountIn(bpm){
 	//This is used to get the player to wait till roughly the same time as the lesson starts.
 	//the lessons have been recorded with a count in of 4 beats. 
 	//The user will be recorded straight away but having them wait until they are told to play will roughly line up
-	//their playing start time with the lesson playing start time. This is done to compare the timing list
+    //their playing start time with the lesson playing start time. This is done to compare the timing list
+    let count_in_div = document.getElementById('count_in_div');
 	let count_in_seconds = (60/bpm) * 1000;
 	let num_of_beats = 4;
 	let countInTimer = setInterval(function(){
-		console.log(num_of_beats);
+        console.log(num_of_beats);
+        count_in_div.innerText = num_of_beats;
+        
 		num_of_beats -= 1;
 		if(num_of_beats <= 0){
 			clearInterval(countInTimer);
-
+            
 		}
-	}, count_in_seconds);
+    }, count_in_seconds);
+    count_in_div.innerText = "";
 }
 
 

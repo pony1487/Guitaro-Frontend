@@ -64,38 +64,84 @@ export function init_notation(){
     for(let i = 0; i < 8; i++){
         let tab_note ={
             positions: [{str: 6, fret: 5}],
-            duration: "8"
+            duration: "32"
         }
 
         notationDrawer.setNotes(tab_note);
     }
 
-    notationDrawer.createVoice();
+    notationDrawer.createVoice(8);
     notationDrawer.formatAndJustify();
     notationDrawer.render();
 }
 
-export function draw_tab(lesson_string_list,lesson_fret_list,lesson_note_durations,total_beats_after_padding){
-    console.log("lesson_string_list: " + lesson_string_list);
-    console.log("lesson_fret_list: " + lesson_fret_list);
-    console.log("lesson_note_durations: " + lesson_note_durations);
+// export function draw_tab(lesson_string_list,lesson_fret_list,lesson_note_durations,total_beats){
+//     console.log("lesson_string_list: " + lesson_string_list);
+//     console.log("lesson_fret_list: " + lesson_fret_list);
+//     console.log("lesson_note_durations: " + lesson_note_durations);
 
-    let lesson_note_durations_length = lesson_note_durations.length;
-    let lesson_notation = document.getElementById("lesson_notation");
-    let lesson_fret_list_length = lesson_fret_list.length;
+//     let lesson_note_durations_length = lesson_note_durations.length;
+//     let lesson_notation = document.getElementById("lesson_notation");
+//     let lesson_fret_list_length = lesson_fret_list.length;
 
-    let notationDrawer = new NotationDrawer(lesson_notation);
+//     let notationDrawer = new NotationDrawer(lesson_notation);
 
-    let total_beats = 0;
+//     console.log("total_beats_after_padding: " + total_beats);
+//     console.log("lesson_fret_list_length: " + lesson_fret_list_length);
+//     console.log("lesson_note_durations_length: " + lesson_note_durations_length);
 
-    for(let i = 0; i < lesson_note_durations_length; i++){
-        //console.log(lesson_fret_list[i])
+//     for(let i = 0; i < lesson_fret_list_length; i++){
 
-        // get the notes played. else draw the padding
-        if (i < lesson_fret_list_length){
-            let str = lesson_string_list[i];
-            let fret = lesson_fret_list[i];
-            let note_duration = lesson_note_durations[i];
+
+//         let str = lesson_string_list[i];
+//         let fret = lesson_fret_list[i];
+//         let note_duration = lesson_note_durations[i];
+
+//         let str_num = string_note_to_number_mapping[str];
+//         let dur = duration_mapping[note_duration]
+
+//         let tab_note ={
+//             positions: [{str: str_num, fret: fret}],
+//             duration: dur
+//         }
+//         try{
+//             notationDrawer.setNotes(tab_note);
+//         }catch(err){
+//             console.log(err);
+//             console.log("index of problem: " + i);
+//             console.log("fret: " + lesson_fret_list[i]);
+//             console.log("String: " + lesson_string_list[i]);
+
+
+//         }
+//     }
+//     notationDrawer.createVoice(total_beats);
+//     notationDrawer.formatAndJustify();
+//     notationDrawer.render();
+// }
+
+
+export function draw_tab(string_list,fret_list,note_durations,total_beats){
+        console.log("string_list: " + string_list);
+        console.log("fret_list: " + fret_list);
+        console.log("note_durations: " + note_durations);
+    
+        let note_durations_length = note_durations.length;
+        let lesson_notation = document.getElementById("lesson_notation");
+        let fret_list_length = fret_list.length;
+    
+        let notationDrawer = new NotationDrawer(lesson_notation);
+    
+        console.log("total_beats: " + total_beats);
+        console.log("fret_list_length: " + fret_list_length);
+        console.log("note_durations_length: " + note_durations_length);
+    
+        for(let i = 0; i < fret_list_length; i++){
+    
+    
+            let str = string_list[i];
+            let fret = fret_list[i];
+            let note_duration = note_durations[i];
     
             let str_num = string_note_to_number_mapping[str];
             let dur = duration_mapping[note_duration]
@@ -104,33 +150,19 @@ export function draw_tab(lesson_string_list,lesson_fret_list,lesson_note_duratio
                 positions: [{str: str_num, fret: fret}],
                 duration: dur
             }
-    
-            //total_beats += dur / 4;
-            console.log("total_beats: " + total_beats);
-            //console.log(tab_note.positions);
-            //console.log(tab_note.duration);
-            notationDrawer.setNotes(tab_note);
-
+            try{
+                notationDrawer.setNotes(tab_note);
+            }catch(err){
+                console.log(err);
+                console.log("index of problem: " + i);
+                console.log("fret: " + fret_list[i]);
+                console.log("String: " + string_list[i]);
+            }
         }
-        else{
-            // let dur = duration_mapping[lesson_note_durations[i]];
-            // let tab_note ={
-            //     positions: [{str: 0, fret: 0}],
-            //     // Make it a rest
-            //     duration: dur + "r"
-            // }
-            // notationDrawer.setNotes(tab_note);
-        }
-
+        notationDrawer.createVoice(total_beats);
+        notationDrawer.formatAndJustify();
+        notationDrawer.render();
     }
-    notationDrawer.printNotes()
-    
-    notationDrawer.createVoice(total_beats_after_padding);
-    notationDrawer.formatAndJustify();
-    notationDrawer.render();
-
-
-}
 
 let string_note_to_number_mapping = {
     E: 6,
@@ -148,7 +180,7 @@ let duration_mapping = {
     quarter:"4", 
     eight:"8", 
     sixteenth:"16",
-    thiry_second: "32"
+    thirty_second: "32"
 }
 
 let beat_count = {
@@ -157,5 +189,5 @@ let beat_count = {
     quarter:"1", 
     eight:"0.5", 
     sixteenth:"0.25",
-    thiry_second: "0.125"
+    thirty_second: "0.125"
 }

@@ -6,9 +6,10 @@ https://addpipe.com/blog/using-recorder-js-to-capture-wav-audio-in-your-html5-we
 // var audio_recorder_methods = require('./audio_recorder.js');
 // var recordLesson = audio_recorder_methods.recordLesson;
 // var stopRecording = audio_recorder_methods.stopRecording;
+const CONFIG = require('./config.json');
 
 import { stopRecording,recordLesson } from './audio_recorder';
-import { init_notation } from './lesson_notation';
+import { draw_tab } from './lesson_notation';
 
 const PlaybackController = require('./PlaybackController.js');
 let playbackController = new PlaybackController();
@@ -37,9 +38,12 @@ function init(){
 
     let stop_recording_button = document.getElementById('stop_button');
     stop_recording_button.addEventListener('click', stopRecording);
+
+
     
     //DEBUG: There will have to be a fetch done to process the lesson first to show it to the user!
     //init_notation();
+    fetchLessonToBeNotated();
     loadWavIntoBuffer();
 }
 
@@ -74,6 +78,22 @@ $(document).ready(function(){
     });
 });
 
+function fetchLessonToBeNotated(){
+    //http://127.0.0.1:5000/notation/topics/picking/A_minor_pentatonic_ascending-95.wav
+    //http://127.0.0.1:5000/topics/picking/A_minor_pentatonic_ascending-95.wav
+
+    let url = localStorage.getItem("url");   
+
+    constructNotationUrl(url);
+    // fetch(url)    
+    // .then(response => {
+        
+    //     console.log(response);
+    // })
+    // .catch(error =>{
+    //     console.log(error);
+    // })
+}
 
 function loadWavIntoBuffer(){
     console.log("loadWavIntoBuffer" + localStorage.getItem("url"));
@@ -137,4 +157,23 @@ function setHeaderToLessonName(url){
     let arr = parser.pathname.split("/");
     header.innerText += ": " +  arr[3];
     
+}
+
+function constructNotationUrl(url){
+    /*  
+parser.protocol; // => "http:"
+parser.host;     // => "example.com:3000"
+parser.hostname; // => "example.com"
+parser.port;     // => "3000"
+parser.pathname; // => "/pathname/"
+parser.hash;     // => "#hash"
+parser.search;   // => "?search=test"
+parser.origin;  
+
+    */
+    let parser = document.createElement('a');
+    parser.href = url;
+
+    let notationUrl = parser.origin + "/" + "notation" + parser.pathname;
+    console.log(notationUrl);
 }
