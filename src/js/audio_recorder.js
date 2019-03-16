@@ -13,7 +13,9 @@ let recordAudioContext;
 let recordingPresent = false
 
 export function recordLesson(e){
+    let bpm = localStorage.getItem("bpm");
     
+
 	//Audio only
 	let constraints = { audio: true, video:false }
 
@@ -30,13 +32,15 @@ export function recordLesson(e){
 			let contextDetails = "Format: 2 channel pcm @ " + recordAudioContext.sampleRate/1000+"kHz";
 			console.log(contextDetails);
 
+            
 			getUserMediaStream = stream;
 			mediaStreamAudioSourceNode = recordAudioContext.createMediaStreamSource(stream);
 			//record audio in stereo
 			recorderObj = new Recorder(mediaStreamAudioSourceNode,{numChannels:2});
 
-			displayCountIn(60);
-			recorderObj.record();
+			
+            recorderObj.record();
+            displayCountIn(bpm);
 			console.log("Recording......");
 
 		}).catch(error => {
@@ -74,6 +78,8 @@ function createAudioElement(blob){
     let post_recording_btn = document.createElement('btn');
     let discard_recording_button = document.createElement('btn');
 
+    let br = document.createElement("br");
+
     post_recording_btn.className = "btn btn-secondary";
     post_recording_btn.textContent = "Submit Recording";
     post_recording_btn.id="post_recording_btn";
@@ -90,6 +96,7 @@ function createAudioElement(blob){
 
 
     audio_player_container.appendChild(audio_player);
+    audio_player_container.appendChild(br);
     audio_player_container.appendChild(post_recording_btn);
     audio_player_container.appendChild(discard_recording_button);
 
@@ -148,7 +155,15 @@ function discard_recording(e){
     document.getElementById('audio_player').remove();
     document.getElementById('discard_recording_button').remove();
     document.getElementById('post_recording_btn').remove();
-    document.getElementById('user_notation').remove();
+
+    let user_notation = document.getElementById('user_notation');
+    let empty_user_notation = document.createElement('div');
+    empty_user_notation.id = 'user_notation';
+
+    user_notation.replaceWith(empty_user_notation);
+    
+
+    
 
     //clear the recording and allow another to be made
     recorderObj.clear();
@@ -163,13 +178,17 @@ function displayCountIn(bpm){
 	//the lessons have been recorded with a count in of 4 beats. 
 	//The user will be recorded straight away but having them wait until they are told to play will roughly line up
     //their playing start time with the lesson playing start time. This is done to compare the timing list
-    let count_in_div = document.getElementById('count_in_div');
+
+    let count_in_toast = document.getElementById('count_in_toast');
 	let count_in_seconds = (60/bpm) * 1000;
 	let num_of_beats = 4;
 	let countInTimer = setInterval(function(){
         console.log(num_of_beats);
-        count_in_div.innerText = num_of_beats;
-        
+
+        $(document).ready(function(){
+            $('.toast').toast('show');      
+        });
+        count_in_toast.innerText = num_of_beats;
 		num_of_beats -= 1;
 		if(num_of_beats <= 0){
 			clearInterval(countInTimer);

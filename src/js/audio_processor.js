@@ -90,7 +90,8 @@ function fetchLessonToBeNotated(){
         let duration_list = json.padded_duration_list;
         let total_beats = json.total_beats;
 
-        
+        // Store bpm for use in audio_recorder.js to determine count in
+        localStorage.setItem("bpm", json.bpm);
         draw_tab(lesson_string_list,lesson_fret_list,duration_list,total_beats,"lesson_notation");
 
     })

@@ -1,8 +1,8 @@
 import Vex from 'vexflow';
 
 class NotationDrawer{
-    constructor(lesson_notation) {
-        this.div = lesson_notation
+    constructor(tab_notation) {
+        this.div = tab_notation
         this.VF = Vex.Flow;
         this.x = 500;
         this.y = 200;
@@ -60,13 +60,14 @@ class NotationDrawer{
 export function draw_tab(string_list,fret_list,note_durations,total_beats,element_name){
     
         let note_durations_length = note_durations.length;
-        let lesson_notation = document.getElementById(element_name);
+        let tab_notation = document.getElementById(element_name);
+
         console.log(element_name);
-        console.log(lesson_notation);
+        console.log(tab_notation);
         
         let fret_list_length = fret_list.length;
     
-        let notationDrawer = new NotationDrawer(lesson_notation);
+        let notationDrawer = new NotationDrawer(tab_notation);
         
         for(let i = 0; i < fret_list_length; i++){
     
@@ -81,7 +82,7 @@ export function draw_tab(string_list,fret_list,note_durations,total_beats,elemen
             // It looks cleaner if I hard code it to be one single duration.
             let tab_note ={
                 positions: [{str: str_num, fret: fret}],
-                duration: dur
+                duration: "8"
             }
             try{
                 notationDrawer.setNotes(tab_note);
