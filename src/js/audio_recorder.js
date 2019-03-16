@@ -148,6 +148,7 @@ function discard_recording(e){
     document.getElementById('audio_player').remove();
     document.getElementById('discard_recording_button').remove();
     document.getElementById('post_recording_btn').remove();
+    document.getElementById('user_notation').remove();
 
     //clear the recording and allow another to be made
     recorderObj.clear();

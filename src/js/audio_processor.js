@@ -39,10 +39,6 @@ function init(){
     let stop_recording_button = document.getElementById('stop_button');
     stop_recording_button.addEventListener('click', stopRecording);
 
-
-    
-    //DEBUG: There will have to be a fetch done to process the lesson first to show it to the user!
-    //init_notation();
     fetchLessonToBeNotated();
     loadWavIntoBuffer();
 }
@@ -84,15 +80,23 @@ function fetchLessonToBeNotated(){
 
     let url = localStorage.getItem("url");   
 
-    constructNotationUrl(url);
-    // fetch(url)    
-    // .then(response => {
+    let notation_url = constructNotationUrl(url);
+
+    fetch(notation_url)    
+    .then(response => response.json())
+    .then(json => {
+        let lesson_fret_list = json.lesson_fret_list;
+        let lesson_string_list = json.lesson_string_list;
+        let duration_list = json.padded_duration_list;
+        let total_beats = json.total_beats;
+
         
-    //     console.log(response);
-    // })
-    // .catch(error =>{
-    //     console.log(error);
-    // })
+        draw_tab(lesson_string_list,lesson_fret_list,duration_list,total_beats,"lesson_notation");
+
+    })
+    .catch(error => {
+        console.log(error);
+    });
 }
 
 function loadWavIntoBuffer(){
@@ -176,4 +180,6 @@ parser.origin;
 
     let notationUrl = parser.origin + "/" + "notation" + parser.pathname;
     console.log(notationUrl);
+
+    return notationUrl;
 }

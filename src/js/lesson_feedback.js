@@ -2,24 +2,14 @@ import { init_notation,draw_tab } from './lesson_notation';
 
 export function processFeedbackJSON(feedBackObj){
     
-
-    // let lesson_string_list = feedBackObj.lesson_string_list;
-    // let lesson_fret_list = feedBackObj.lesson_fret_list;
-    // let lesson_note_durations = feedBackObj.lesson_note_durations;
-    // let lesson_total_beats = feedBackObj.total_beats;
-
     let user_string_list = feedBackObj.user_string_list;
     let user_fret_list = feedBackObj.user_fret_list;
     let user_note_durations = feedBackObj.user_duration_list;
     let user_total_beats = feedBackObj.total_beats;
 
     
-    //DEBUG
-    //draw lesson
-    //draw_tab(lesson_string_list,lesson_fret_list,lesson_note_durations,lesson_total_beats);
-
     //draw user
-    draw_tab(user_string_list,user_fret_list,user_note_durations,user_total_beats);
+    draw_tab(user_string_list,user_fret_list,user_note_durations,user_total_beats,"user_notation");
     
 
     // let lesson_name_p = document.getElementById('lesson_name');
