@@ -2,16 +2,37 @@ import { init_notation,draw_tab } from './lesson_notation';
 
 export function processFeedbackJSON(feedBackObj){
     
-    let user_string_list = feedBackObj.user_string_list;
-    let user_fret_list = feedBackObj.user_fret_list;
+    //let user_string_list = feedBackObj.user_string_list;
+    //let user_fret_list = feedBackObj.user_fret_list;
+    //let wrong_note_indexes = feedBackObj.wrong_note_indexes;
+
     let user_note_durations = feedBackObj.user_duration_list;
     let user_total_beats = feedBackObj.total_beats;
+    
 
+    ///////////////////////////////////
+    //Test data as I dont have a guitar to play in the library
+    ///////////////////////////////////
+    let user_fret_list = [5,8,5,7,6,7]
+    let user_note_list = ["A","C","D","E","G#","A"]
+    let user_string_list = ["E","E","A","A","D","D"]
+    let wrong_note_indexes = [4];
+
+    // let user_fret_list = [3,6,3,5,5,3,5,3,6,3,6];
+    // let user_note_list = ["G","Bb","C","D","G","Bb","C","D","F","G","Bb"];
+    // let user_string_list = ["E","E","A","A","D","G","G","B","B","e","e"];
+
+
+    // let user_fret_list = [8,10,7,8,10,7,9,10]
+    // let user_note_list = ["C","D","E","F","G","A","B","C"]
+    // let user_string_list = ["E","E","A","A","A","D","D","D"]
+
+    /////////////////////////////////////////////
     
     //draw user
-    test_canvas();
-    draw_tab(user_string_list,user_fret_list,user_note_durations,user_total_beats,"user_notation");
-    
+    let note_coordinates = draw_tab(user_string_list,user_fret_list,user_note_durations,user_total_beats,"user_notation");
+    draw_feedback_overlay(note_coordinates,wrong_note_indexes);
+
 
     // let lesson_name_p = document.getElementById('lesson_name');
     // let lesson_bpm_p = document.getElementById('lesson_bpm');
@@ -31,56 +52,29 @@ export function processFeedbackJSON(feedBackObj){
 
 }
 
-function test_canvas(){
-    let num_of_notes = 6;
 
-    //These were eyeballed as the Tab stave from vexflow starts in the middle of the canvas somewhere
-    let y_pos_of_high_e = 92;
-    let y_pos_of_low_e = 157;
+function draw_feedback_overlay(coordinate_obj,wrong_note_indexes){
 
-    // the width of the stave is 450.
-    let width = 450;
-    let height = y_pos_of_low_e - y_pos_of_high_e;
- 
-
-    let x_position_diff = width / num_of_notes;
-    let string = height / 6;
-
-    let string_coordinates = {}
-
-    let start_string_coordinate = y_pos_of_high_e;
-    let string_number = 1;
-    for(let i =0;i < 6;i++){
-        string_coordinates[string_number] = start_string_coordinate;
-        start_string_coordinate += string;
-        string_number++;
+    if(!Array.isArray(wrong_note_indexes) || !wrong_note_indexes.length) {
+        //wrong_note_indexes is empty,so the user played it correctly or the array doenst exist
+        //WELL DONE!
+        //TO DO
     }
+    else{
+        //draw the feedback
+        let canvas = document.getElementById("userNotationCanvas");
+        let ctx = canvas.getContext("2d");
+        ctx.moveTo(0, 0);
+        ctx.fillStyle = "red";
 
-    console.log(string_coordinates);
+        let x_coordinates = coordinate_obj.x_coordinates;
+        let y_coordinates = coordinate_obj.y_coordinates;
 
-    let canvas = document.getElementById("userNotationCanvas");
-    let ctx = canvas.getContext("2d");
-    ctx.moveTo(0, 0);
-    ctx.fillStyle = "red";
+        let number_of_notes = x_coordinates.length;
 
-    let x_pos = 45;
-    let y_pos_start = 150;
-
-    //ctx.fillRect(x_pos,157,15,15); 
-    //ctx.fillRect(x_pos,92,15,15); 
-
-
-
-    let test_string_nums = [6,6,5,5,4,4];
-
-    for(let i = 0; i < num_of_notes;i++){
-        let string_played = test_string_nums[i];
-        //console.log(string_played);
-        let y_pos = string_coordinates[string_played];
-        
-        ctx.fillRect(x_pos,y_pos,15,15); 
-        x_pos += x_position_diff;
+        for(let i = 0;i < number_of_notes;i++){
+            
+            ctx.fillRect(x_coordinates[i],y_coordinates[i],15,15);
+        }
     }
 }
-
-//module.exports = processFeedbackJSON;

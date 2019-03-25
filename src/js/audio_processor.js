@@ -93,62 +93,12 @@ function fetchLessonToBeNotated(){
         // Store bpm for use in audio_recorder.js to determine count in
         localStorage.setItem("bpm", json.bpm);
         draw_tab(lesson_string_list,lesson_fret_list,duration_list,total_beats,"lesson_notation");
-        test_canvas();
 
     })
     .catch(error => {
         console.log(error);
     });
 }
-////////////////////////////////////////////
-//DELETE
-function test_canvas(){
-    let num_of_notes = 8;
-
-    let width = 500;
-    let height = 200;
-
-    let x_position_diff = 500 / num_of_notes;
-    let string = height / 6;
-
-    let string_coordinates = {}
-
-    let start_string_coordinate = 0;
-    let string_number = 1;
-    for(let i =0;i < 6;i++){
-        string_coordinates[string_number] = start_string_coordinate;
-        start_string_coordinate += string;
-        string_number++;
-    }
-
-    //console.log(string_coordinates);
-
-    let canvas = document.getElementById("lessonNotationCanvas");
-    let ctx = canvas.getContext("2d");
-    ctx.moveTo(0, 0);
-    ctx.fillStyle = "red";
-
-    let x_pos = 30;
-    let y_pos = 150;
-
-    ctx.fillRect(x_pos,y_pos,10,10); 
-
-    // let x_pos = 10;
-
-    // let test_string_nums = [6,6,5,5,4,4,5,5];
-
-    // for(let i = 0; i < num_of_notes;i++){
-    //     let string_played = test_string_nums[i];
-    //     console.log(string_played);
-    //     let y_pos = string_coordinates[string_played];
-        
-    //     console.log("y_pos: " + y_pos);
-    //     ctx.fillRect(x_pos,y_pos,10,10); 
-    //     x_pos += x_position_diff;
-    // }
-}
-////////////////////////////////////////////////////
-
 
 
 function loadWavIntoBuffer(){

@@ -1,4 +1,9 @@
 import Vex from 'vexflow';
+/*
+var C7 = new Vex.Flow.StaveNote({ keys: ['C/4', 'E/4', 'G/4', 'Bb/4'], duration: '8'});
+C7.setStyle({fillStyle: "blue", strokeStyle: "blue"});
+
+*/
 
 class NotationDrawer{
     constructor(tab_notation) {
@@ -16,6 +21,9 @@ class NotationDrawer{
         this.notes = [];
         this.voice;
         this.formatter;
+
+        this.note_x_coordinates = [];
+        this.note_y_coordinates = [];
     }
 
     setNotes(tab_note){
@@ -24,10 +32,26 @@ class NotationDrawer{
         this.notes.push(vf_tab_note);
     }
 
+    setCoordinates(){
+        for(let i = 0; i < this.notes.length; i++){
+            this.note_x_coordinates.push(this.notes[i].getAbsoluteX());
+            this.note_y_coordinates.push(this.notes[i].getYs());
+        }
+    }
+
+    getCoordinates(){
+        return {
+            x_coordinates: this.note_x_coordinates,
+            y_coordinates: this.note_y_coordinates
+        };
+    }
+
+
     printNotes(){
         for(let i = 0; i < this.notes.length; i++){
             console.log(this.notes[i].positions);
             console.log(this.notes[i].duration);
+            console.log("abosulte x: " + this.notes[i].getAbsoluteX() + "y: " + this.notes[i].getYs());
         }
 
     }
@@ -86,6 +110,7 @@ export function draw_tab(string_list,fret_list,note_durations,total_beats,elemen
             }
             try{
                 notationDrawer.setNotes(tab_note);
+                
             }catch(err){
                 console.log(err);
                 console.log("index of problem: " + i);
@@ -93,10 +118,17 @@ export function draw_tab(string_list,fret_list,note_durations,total_beats,elemen
                 console.log("String: " + string_list[i]);
             }
         }
+
+
         notationDrawer.createVoice(total_beats);
         notationDrawer.formatAndJustify();
         notationDrawer.render();
-    }
+
+        notationDrawer.setCoordinates();
+        return notationDrawer.getCoordinates();
+}
+
+
 
 let string_note_to_number_mapping = {
     E: 6,
