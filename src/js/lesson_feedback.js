@@ -13,10 +13,10 @@ export function processFeedbackJSON(feedBackObj){
     ///////////////////////////////////
     //Test data as I dont have a guitar to play in the library
     ///////////////////////////////////
-    let user_fret_list = [5,8,5,7,6,7]
-    let user_note_list = ["A","C","D","E","G#","A"]
+    let user_fret_list = [5,8,4,7,6,7]
+    let user_note_list = ["A","C","C#","E","G#","A"]
     let user_string_list = ["E","E","A","A","D","D"]
-    let wrong_note_indexes = [4];
+    let wrong_note_indexes = [2,4];
 
     // let user_fret_list = [3,6,3,5,5,3,5,3,6,3,6];
     // let user_note_list = ["G","Bb","C","D","G","Bb","C","D","F","G","Bb"];
@@ -59,22 +59,67 @@ function draw_feedback_overlay(coordinate_obj,wrong_note_indexes){
         //wrong_note_indexes is empty,so the user played it correctly or the array doenst exist
         //WELL DONE!
         //TO DO
+        
+
+        //DELETE BELOW. It is only for testing as the audio recorded is just silence 
+        //draw the feedback
+        //draw the feedback
+        let canvas = document.getElementById("userNotationCanvas");
+        let ctx = canvas.getContext("2d");
+
+        let rect_width = 15;
+        let rect_height = 15;
+
+
+        ctx.moveTo(0, 0);
+        ctx.fillStyle = "red";
+
+
+        let x_coordinates = coordinate_obj.x_coordinates;
+        let y_coordinates = coordinate_obj.y_coordinates;
+
+        for(let i = 0;i < wrong_note_indexes.length;i++){
+            let wrong_note_index = wrong_note_indexes[i];
+
+            let x = x_coordinates[wrong_note_index];
+            let y = y_coordinates[wrong_note_index];
+
+            //Draw the rect at the center rather than the top left
+            let new_x = x - rect_width / 2
+            let new_y = y - rect_height / 2
+
+            ctx.fillRect(new_x,new_y,rect_height,rect_width);
+        }
+        /////////////////////////////////////////////////////////////////////////
     }
     else{
         //draw the feedback
         let canvas = document.getElementById("userNotationCanvas");
         let ctx = canvas.getContext("2d");
+
+        let rect_width = 15;
+        let rect_height = 15;
+
+
         ctx.moveTo(0, 0);
         ctx.fillStyle = "red";
+
 
         let x_coordinates = coordinate_obj.x_coordinates;
         let y_coordinates = coordinate_obj.y_coordinates;
 
-        let number_of_notes = x_coordinates.length;
+        for(let i = 0;i < wrong_note_indexes.length;i++){
+            let wrong_note_index = wrong_note_indexes[i];
 
-        for(let i = 0;i < number_of_notes;i++){
-            
-            ctx.fillRect(x_coordinates[i],y_coordinates[i],15,15);
+            let x = x_coordinates[wrong_note_index];
+            let y = y_coordinates[wrong_note_index];
+
+            //Draw the rect at the center rather than the top left
+            let new_x = x - rect_width / 2
+            let new_y = y - rect_height / 2
+
+            ctx.fillRect(new_x,new_y,rect_height,rect_width);
+
         }
     }
 }
